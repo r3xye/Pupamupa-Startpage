@@ -30,8 +30,7 @@
 
             <!-- Основная сетка: левая + правая -->
             <div class="main-grid">
-                <!-- ЛЕВАЯ КОЛОНА -->
-                <div class="left-column">
+                <div class="main-tiles-grid">
                     <!-- AI Link Categorizer -->
                     <div class="category-block ai-block fade-in">
                         <h3 class="category-title">🤖 AI Link Categorizer</h3>
@@ -46,119 +45,108 @@
                         <div id="quote" class="quote-text">Loading...</div>
                         <button onclick="loadQuote()" class="mini-btn">Новая цитата</button>
                     </div>
-                </div>
 
-                <!-- ПРАВАЯ КОЛОНА -->
-                <div class="right-column">
-                    <!-- ВЕРХНЯЯ СТРОКА (развлечение + кодинг) -->
-                    <div class="right-top-row">
-                        <!-- РАЗВЛЕЧЕНИЕ -->
-                        <div class="category-block entertainment-block fade-in">
-                            <h3 class="category-title">🎮 Entertainment</h3>
-                            <div class="links-grid">
-                                <a href="https://youtube.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube">
-                                    <span class="label">YouTube</span>
-                                </a>
-                                <a href="https://twitch.tv" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=twitch.tv&sz=64" alt="Twitch">
-                                    <span class="label">Twitch</span>
-                                </a>
-                                <a href="https://tiktok.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="TikTok">
-                                    <span class="label">TikTok</span>
-                                </a>
-                                <a href="https://spotify.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
-                                    <span class="label">Spotify</span>
-                                </a>
-                                <a href="https://epicgames.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=epicgames.com&sz=64" alt="Epic Games">
-                                    <span class="label">Epic Games</span>
-                                </a>
-                                <a href="https://chess.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=chess.com&sz=64" alt="Chess.com">
-                                    <span class="label">Chess.com</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- КОДИНГ -->
-                        <div class="category-block coding-block fade-in">
-                            <h3 class="category-title">💻 Coding</h3>
-                            <div class="links-grid">
-                                <a href="https://github.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt="GitHub">
-                                    <span class="label">GitHub</span>
-                                </a>
-                                <a href="https://gitlab.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=gitlab.com&sz=64" alt="GitLab">
-                                    <span class="label">GitLab</span>
-                                </a>
-                                <a href="https://codepen.io" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=codepen.io&sz=64" alt="CodePen">
-                                    <span class="label">CodePen</span>
-                                </a>
-                                <a href="https://quickref.me" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=quickref.me&sz=64" alt="QuickRef">
-                                    <span class="label">QuickRef.me</span>
-                                </a>
-                                <a href="https://monkeytype.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=monkeytype.com&sz=64" alt="MonkeyType">
-                                    <span class="label">MonkeyType</span>
-                                </a>
-                                <a href="https://flutter.dev" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=flutter.dev&sz=64" alt="Flutter">
-                                    <span class="label">Flutter</span>
-                                </a>
-                            </div>
+                    <!-- Entertainment -->
+                    <div class="category-block entertainment-block fade-in">
+                        <h3 class="category-title">🎮 Entertainment</h3>
+                        <div class="links-grid">
+                            <a href="https://youtube.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube">
+                                <span class="label">YouTube</span>
+                            </a>
+                            <a href="https://twitch.tv" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=twitch.tv&sz=64" alt="Twitch">
+                                <span class="label">Twitch</span>
+                            </a>
+                            <a href="https://tiktok.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="TikTok">
+                                <span class="label">TikTok</span>
+                            </a>
+                            <a href="https://spotify.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
+                                <span class="label">Spotify</span>
+                            </a>
+                            <a href="https://epicgames.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=epicgames.com&sz=64" alt="Epic Games">
+                                <span class="label">Epic Games</span>
+                            </a>
+                            <a href="https://chess.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=chess.com&sz=64" alt="Chess.com">
+                                <span class="label">Chess.com</span>
+                            </a>
                         </div>
                     </div>
 
-                    <!-- НИЖНЯЯ СТРОКА (безопасность + продуктивность + майнсвипер) -->
-                    <div class="right-bottom-row">
-                        <!-- БЕЗОПАСНОСТЬ -->
-                        <div class="category-block security-block fade-in">
-                            <h3 class="category-title">🛡️ Security</h3>
-                            <div class="links-grid">
-                                <a href="https://tryhackme.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=tryhackme.com&sz=64" alt="TryHackMe">
-                                    <span class="label">TryHackMe</span>
-                                </a>
-                                <a href="https://hacktriks.xyz" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=hacktriks.xyz&sz=64" alt="HackTricks">
-                                    <span class="label">HackTricks</span>
-                                </a>
-                                <a href="https://owasp.org" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=owasp.org&sz=64" alt="OWASP">
-                                    <span class="label">OWASP</span>
-                                </a>
-                            </div>
+                    <!-- Coding -->
+                    <div class="category-block coding-block fade-in">
+                        <h3 class="category-title">💻 Coding</h3>
+                        <div class="links-grid">
+                            <a href="https://github.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt="GitHub">
+                                <span class="label">GitHub</span>
+                            </a>
+                            <a href="https://gitlab.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=gitlab.com&sz=64" alt="GitLab">
+                                <span class="label">GitLab</span>
+                            </a>
+                            <a href="https://codepen.io" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=codepen.io&sz=64" alt="CodePen">
+                                <span class="label">CodePen</span>
+                            </a>
+                            <a href="https://quickref.me" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=quickref.me&sz=64" alt="QuickRef">
+                                <span class="label">QuickRef.me</span>
+                            </a>
+                            <a href="https://monkeytype.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=monkeytype.com&sz=64" alt="MonkeyType">
+                                <span class="label">MonkeyType</span>
+                            </a>
+                            <a href="https://flutter.dev" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=flutter.dev&sz=64" alt="Flutter">
+                                <span class="label">Flutter</span>
+                            </a>
                         </div>
+                    </div>
 
-                        <!-- ПРОДУКТИВНОСТЬ -->
-                        <div class="category-block productivity-block fade-in">
-                            <h3 class="category-title">📊 Productivity</h3>
-                            <div class="links-grid">
-                                <a href="https://gmail.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=gmail.com&sz=64" alt="Gmail">
-                                    <span class="label">Gmail</span>
-                                </a>
-                                <a href="https://slack.com" class="link-card">
-                                    <img class="site-icon" src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="Slack">
-                                    <span class="label">Slack</span>
-                                </a>
-                            </div>
+                    <!-- Security -->
+                    <div class="category-block security-block fade-in">
+                        <h3 class="category-title">🛡️ Security</h3>
+                        <div class="links-grid">
+                            <a href="https://tryhackme.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=tryhackme.com&sz=64" alt="TryHackMe">
+                                <span class="label">TryHackMe</span>
+                            </a>
+                            <a href="https://hacktriks.xyz" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=hacktriks.xyz&sz=64" alt="HackTricks">
+                                <span class="label">HackTricks</span>
+                            </a>
+                            <a href="https://owasp.org" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=owasp.org&sz=64" alt="OWASP">
+                                <span class="label">OWASP</span>
+                            </a>
                         </div>
+                    </div>
 
-                        <!-- МАЙНСВИПЕР -->
-                        <div class="minesweeper-mini-block fade-in">
-                            <div id="minesweeper" class="minesweeper-container">
-                                <h3 class="minesweeper-title">💣 Minesweeper</h3>
-                                <button onclick="toggleMinesweeper()" class="mini-btn">Start Game</button>
-                                <div id="mineGrid" class="minesweeper-grid"></div>
-                            </div>
+                    <!-- Productivity -->
+                    <div class="category-block productivity-block fade-in">
+                        <h3 class="category-title">📊 Productivity</h3>
+                        <div class="links-grid">
+                            <a href="https://gmail.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=gmail.com&sz=64" alt="Gmail">
+                                <span class="label">Gmail</span>
+                            </a>
+                            <a href="https://slack.com" class="link-card">
+                                <img class="site-icon" src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="Slack">
+                                <span class="label">Slack</span>
+                            </a>
                         </div>
+                    </div>
+
+                    <!-- Minesweeper (в пустой плитке) -->
+                    <div class="category-block minesweeper-block fade-in">
+                        <h3 class="category-title">💣 Minesweeper</h3>
+                        <button onclick="toggleMinesweeper()" class="mini-btn">Start Game</button>
+                        <div id="mineGrid" class="minesweeper-grid"></div>
                     </div>
                 </div>
             </div>
@@ -331,34 +319,32 @@
                 </div>
             </div>
 
-            <!-- Мини-сапёр -->
-            <div class="widget minesweeper-widget fade-in">
-                <button onclick="toggleMinesweeper()" class="mini-btn">💣</button>
-                <div id="minesweeper" class="minesweeper hidden">
-                    <div class="minesweeper-grid" id="mineGrid"></div>
+                <!-- Погода -->
+                <div class="widget weather-widget">
+                    <div id="weather">
+                        <div class="weather-temp">--°C</div>
+                        <div class="weather-desc">Oslo</div>
+                    </div>
+                    <button onclick="loadWeather()" class="mini-btn">🌤️</button>
+                </div>
+
+                <!-- Время -->
+                <div class="widget time-widget">
+                    <div id="time" class="time-display">00:00</div>
+                    <button class="mini-btn">⏰</button>
+                </div>
+
+                <!-- Steam сезонные скидки -->
+                <div class="widget steam-widget">
+                    <h4 class="widget-title">Steam Sales (₴)</h4>
+                    <div id="steamGames" class="steam-games-list">
+                        <div class="steam-game">Loading...</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Логотип внизу -->
-        <div class="logo-container fade-in">
-            <img src="image.png" alt="Pupamupa" class="logo" onerror="this.style.display='none'">
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
-
-                <!-- ВСЕ -->
-                <div id="all" class="tab-content active">
-                    <div class="links-grid">
-                        <a href="https://youtube.com" class="link-card" data-category="entertainment">
-                            <img class="site-icon" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube">
-                            <span class="label">YouTube</span>
-                        </a>
-                        <a href="https://chess.com" class="link-card" data-category="entertainment">
-                            <img class="site-icon" src="https://www.google.com/s2/favicons?domain=chess.com&sz=64" alt="Chess.com">
+            <!-- Текст между плитками -->
+            <div class="enjoyer-text fade-in" style="text-align:center;margin:24px 0 0 0;font-size:1.1em;color:#b7aaff;letter-spacing:1px;">Made by the strongest PUPAMUPA enjoyer</div>
                             <span class="label">Chess.com</span>
                         </a>
                         <a href="https://monkeytype.com" class="link-card" data-category="entertainment">
