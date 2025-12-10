@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Стартовый Экран</title>
+    <link rel="stylesheet" href="style. css">
+</head>
+<body>
+    <div class="container">
+        <!-- Фон с анимацией -->
+        <div class="animated-background">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+
+        <!-- Главный контент -->
+        <div class="content">
+            <!-- Поисковая строка -->
+            <div class="search-container fade-in">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Поиск в Google..."
+                >
+                <button class="search-btn" onclick="performSearch()">🔍</button>
+            </div>
+
+            <!-- Вкладки -->
+            <div class="tabs fade-in">
+                <button class="tab-btn active" onclick="switchTab('all')">🎯 Все</button>
+                <button class="tab-btn" onclick="switchTab('learning')">📚 Обучение</button>
+                <button class="tab-btn" onclick="switchTab('entertainment')">🎮 Развлечение</button>
+                <button class="tab-btn" onclick="switchTab('security')">🔐 Кибербезопасность</button>
+                <button class="tab-btn" onclick="switchTab('useful')">💼 Полезное</button>
+            </div>
+
+            <!-- Содержание вкладок -->
+            <div class="tabs-content">
+                <!-- ВСЕ -->
+                <div id="all" class="tab-content active">
+                    <div class="links-grid">
+                        <a href="https://youtube.com" class="link-card" data-category="entertainment">
+                            <span class="icon">▶️</span>
+                            <span class="label">YouTube</span>
+                        </a>
+                        <a href="https://chess.com" class="link-card" data-category="entertainment">
+                            <span class="icon">♟️</span>
+                            <span class="label">Chess. com</span>
+                        </a>
+                        <a href="https://monkeytype.com" class="link-card" data-category="entertainment">
+                            <span class="icon">⌨️</span>
+                            <span class="label">MonkeyType</span>
+                        </a>
+                        <a href="https://gmail.com" class="link-card" data-category="useful">
+                            <span class="icon">📧</span>
+                            <span class="label">Gmail</span>
+                        </a>
+                        <a href="https://github.com" class="link-card" data-category="learning">
+                            <span class="icon">💻</span>
+                            <span class="label">GitHub</span>
+                        </a>
+                        <a href="https://flutter.dev" class="link-card" data-category="learning">
+                            <span class="icon">🦋</span>
+                            <span class="label">Flutter</span>
+                        </a>
+                        <a href="https://tryhackme.com" class="link-card" data-category="security">
+                            <span class="icon">🛡️</span>
+                            <span class="label">TryHackMe</span>
+                        </a>
+                        <a href="https://hacktriks.xyz" class="link-card" data-category="security">
+                            <span class="icon">⚔️</span>
+                            <span class="label">HackTricks</span>
+                        </a>
+                        <a href="https://quickref.me" class="link-card" data-category="useful">
+                            <span class="icon">📖</span>
+                            <span class="label">QuickRef. me</span>
+                        </a>
+                        <a href="https://www.udemy.com" class="link-card" data-category="learning">
+                            <span class="icon">🎓</span>
+                            <span class="label">Udemy</span>
+                        </a>
+                        <a href="https://stackoverflow.com" class="link-card" data-category="learning">
+                            <span class="icon">🤓</span>
+                            <span class="label">Stack Overflow</span>
+                        </a>
+                        <a href="https://leetcode.com" class="link-card" data-category="learning">
+                            <span class="icon">💡</span>
+                            <span class="label">LeetCode</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ОБУЧЕНИЕ -->
+                <div id="learning" class="tab-content">
+                    <div class="links-grid">
+                        <a href="https://github.com" class="link-card">
+                            <span class="icon">💻</span>
+                            <span class="label">GitHub</span>
+                        </a>
+                        <a href="https://flutter.dev" class="link-card">
+                            <span class="icon">🦋</span>
+                            <span class="label">Flutter</span>
+                        </a>
+                        <a href="https://www.udemy.com" class="link-card">
+                            <span class="icon">🎓</span>
+                            <span class="label">Udemy</span>
+                        </a>
+                        <a href="https://stackoverflow.com" class="link-card">
+                            <span class="icon">🤓</span>
+                            <span class="label">Stack Overflow</span>
+                        </a>
+                        <a href="https://leetcode.com" class="link-card">
+                            <span class="icon">💡</span>
+                            <span class="label">LeetCode</span>
+                        </a>
+                        <a href="https://roadmap.sh" class="link-card">
+                            <span class="icon">🗺️</span>
+                            <span class="label">Dev Roadmap</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- РАЗВЛЕЧЕНИЕ -->
+                <div id="entertainment" class="tab-content">
+                    <div class="links-grid">
+                        <a href="https://youtube.com" class="link-card">
+                            <span class="icon">▶️</span>
+                            <span class="label">YouTube</span>
+                        </a>
+                        <a href="https://chess.com" class="link-card">
+                            <span class="icon">♟️</span>
+                            <span class="label">Chess.com</span>
+                        </a>
+                        <a href="https://monkeytype.com" class="link-card">
+                            <span class="icon">⌨️</span>
+                            <span class="label">MonkeyType</span>
+                        </a>
+                        <a href="https://twitch.tv" class="link-card">
+                            <span class="icon">📺</span>
+                            <span class="label">Twitch</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- КИБЕРБЕЗОПАСНОСТЬ -->
+                <div id="security" class="tab-content">
+                    <div class="links-grid">
+                        <a href="https://tryhackme.com" class="link-card">
+                            <span class="icon">🛡️</span>
+                            <span class="label">TryHackMe</span>
+                        </a>
+                        <a href="https://hacktriks.xyz" class="link-card">
+                            <span class="icon">⚔️</span>
+                            <span class="label">HackTricks</span>
+                        </a>
+                        <a href="https://owasp.org" class="link-card">
+                            <span class="icon">🔒</span>
+                            <span class="label">OWASP</span>
+                        </a>
+                        <a href="https://pentestmonkey.net" class="link-card">
+                            <span class="icon">🐵</span>
+                            <span class="label">Pentest Monkey</span>
+                        </a>
+                        <a href="https://exploit-db.com" class="link-card">
+                            <span class="icon">💣</span>
+                            <span class="label">Exploit-DB</span>
+                        </a>
+                        <a href="https://ctftime.org" class="link-card">
+                            <span class="icon">🏆</span>
+                            <span class="label">CTFtime</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ПОЛЕЗНОЕ -->
+                <div id="useful" class="tab-content">
+                    <div class="links-grid">
+                        <a href="https://gmail.com" class="link-card">
+                            <span class="icon">📧</span>
+                            <span class="label">Gmail</span>
+                        </a>
+                        <a href="https://quickref.me" class="link-card">
+                            <span class="icon">📖</span>
+                            <span class="label">QuickRef.me</span>
+                        </a>
+                        <a href="https://notion.so" class="link-card">
+                            <span class="icon">📝</span>
+                            <span class="label">Notion</span>
+                        </a>
+                        <a href="https://figma.com" class="link-card">
+                            <span class="icon">🎨</span>
+                            <span class="label">Figma</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Виджеты внизу -->
+            <div class="widgets">
+                <!-- Цитата -->
+                <div class="widget quote-widget fade-in">
+                    <div id="quote" class="quote-text">Loading...</div>
+                    <button onclick="loadQuote()" class="mini-btn">📖</button>
+                </div>
+
+                <!-- Погода -->
+                <div class="widget weather-widget fade-in">
+                    <div id="weather">
+                        <div class="weather-temp">--°C</div>
+                        <div class="weather-desc">Погода</div>
+                    </div>
+                    <button onclick="loadWeather()" class="mini-btn">🌤️</button>
+                </div>
+
+                <!-- Время -->
+                <div class="widget time-widget fade-in">
+                    <div id="time" class="time-display">00:00</div>
+                    <button class="mini-btn">⏰</button>
+                </div>
+            </div>
+
+            <!-- Мини-сапёр -->
+            <div class="widget minesweeper-widget fade-in">
+                <button onclick="toggleMinesweeper()" class="mini-btn">💣</button>
+                <div id="minesweeper" class="minesweeper hidden">
+                    <div class="minesweeper-grid" id="mineGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Логотип внизу -->
+        <div class="logo-container fade-in">
+            <img src="image. png" alt="Pupamupa" class="logo" onerror="this.style.display='none'">
+        </div>
+    </div>
+
+    <script src="script. js"></script>
+</body>
+</html>

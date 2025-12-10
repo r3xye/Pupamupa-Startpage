@@ -1,0 +1,532 @@
+:root {
+    --primary: #2d1b4e;
+    --secondary: #4a2c7a;
+    --accent: #9d4edd;
+    --light: #e0aaff;
+    --text: #f0e6ff;
+    --card-bg: rgba(77, 39, 105, 0.6);
+    --border: rgba(157, 78, 221, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height:  100%;
+    overflow-x: hidden;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #1f0d34 100%);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Анимированный фон */
+.animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:  100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    opacity: 0.1;
+    filter: blur(50px);
+    animation: blob-animation 8s infinite;
+}
+
+.blob-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--accent);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    width: 200px;
+    height: 200px;
+    background: #a55eea;
+    bottom: -50px;
+    left: 10%;
+    animation-delay: 2s;
+}
+
+.blob-3 {
+    width: 250px;
+    height: 250px;
+    background: #fd79a8;
+    top: 50%;
+    left: -100px;
+    animation-delay:  4s;
+}
+
+@keyframes blob-animation {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.content {
+    width: 100%;
+    max-width: 1200px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Поиск */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom:  20px;
+    animation: slideDown 0.6s ease-out;
+}
+
+.search-input {
+    flex: 1;
+    max-width: 500px;
+    padding: 15px 20px;
+    border: 2px solid var(--border);
+    border-radius:  50px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+    transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+    color: rgba(224, 166, 255, 0.5);
+}
+
+.search-btn {
+    padding: 15px 20px;
+    border: 2px solid var(--border);
+    border-radius: 50px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.search-btn:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+    transform: scale(1.05);
+}
+
+.search-btn:active {
+    transform: scale(0.95);
+}
+
+/* Вкладки */
+.tabs {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: slideUp 0.6s ease-out;
+}
+
+.tab-btn {
+    padding:  10px 20px;
+    border: 2px solid var(--border);
+    border-radius: 30px;
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(157, 78, 221, 0.2);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, var(--accent), #a55eea);
+    border-color: var(--accent);
+    box-shadow: 0 5px 20px rgba(157, 78, 221, 0.4);
+}
+
+/* Карточки ссылок */
+.tabs-content {
+    min-height: 300px;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-in;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.link-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 15px;
+    border: 2px solid var(--border);
+    border-radius:  20px;
+    background: var(--card-bg);
+    color: var(--text);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    gap: 10px;
+}
+
+.link-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(157, 78, 221, 0.3);
+    background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(165, 94, 234, 0.1));
+}
+
+.link-card:active {
+    transform: translateY(-4px) scale(0.98);
+}
+.link-card .icon {
+    font-size: 32px;
+    transition: all 0.3s ease;
+}
+
+.link-card:hover .icon {
+    font-size: 40px;
+    animation: bounce 0.6s ease;
+}
+
+.link-card .label {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Виджеты */
+.widgets {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 25px;
+    border: 2px solid var(--border);
+    border-radius:  20px;
+    background:  var(--card-bg);
+    backdrop-filter: blur(10px);
+    min-width: 180px;
+    gap: 10px;
+    transition: all 0.3s ease;
+    animation: slideUp 0.6s ease-out;
+}
+.widget:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(157, 78, 221, 0.2);
+}
+
+.quote-widget {
+    max-width: 400px;
+}
+
+.quote-text {
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+    color: var(--light);
+    line-height: 1.6;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.weather-widget {
+    text-align: center;
+}
+
+.weather-temp {
+    font-size: 28px;
+    font-weight:  bold;
+    color: var(--accent);
+}
+
+.weather-desc {
+    font-size: 12px;
+    color: rgba(224, 166, 255, 0.7);
+}
+
+.time-widget {
+    text-align: center;
+}
+
+.time-display {
+    font-size: 32px;
+    font-weight:  bold;
+    font-family: 'Courier New', monospace;
+    color: var(--accent);
+    letter-spacing: 2px;
+}
+
+.mini-btn {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: rgba(157, 78, 221, 0.2);
+    color: var(--light);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mini-btn:hover {
+    background: rgba(157, 78, 221, 0.4);
+    border-color: var(--accent);
+}
+
+/* Мини-сапёр */
+.minesweeper-widget {
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    z-index:  100;
+}
+
+.minesweeper {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    border-radius: 15px;
+    padding: 15px;
+    display: grid;
+    animation: popIn 0.3s ease;
+}
+
+.minesweeper.hidden {
+    display: none;
+}
+
+.minesweeper-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 30px);
+    gap: 5px;
+}
+
+.mine-cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    background: rgba(157, 78, 221, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.mine-cell:hover {
+    background: rgba(157, 78, 221, 0.4);
+}
+
+.mine-cell.revealed {
+    background: rgba(157, 78, 221, 0.1);
+    border-color: var(--light);
+}
+
+.mine-cell.mine.revealed {
+    background: rgba(205, 92, 92, 0.5);
+}
+
+/* Логотип */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    animation: fadeIn 1s ease-out 0.5s both;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    object-fit: cover;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.logo:hover {
+    opacity: 1;
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 30px rgba(157, 78, 221, 0.4);
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform:  translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform:  scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform:  scale(1);
+    }
+}
+
+.fade-in {
+    animation:  fadeIn 0.6s ease-out;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .links-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 15px;
+    }
+
+    .tabs {
+        gap: 10px;
+    }
+
+    .tab-btn {
+        padding:  8px 15px;
+        font-size: 12px;
+    }
+
+    .search-input {
+        max-width: 100%;
+    }
+
+    .widgets {
+        gap: 15px;
+    }
+
+    .widget {
+        min-width: 150px;
+        padding: 15px 20px;
+    }
+
+    .minesweeper-widget {
+        bottom: 20px;
+        right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 10px;
+    }
+
+    .link-card {
+        padding: 20px 10px;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .time-display {
+        font-size: 24px;
+    }
+}
