@@ -162,23 +162,35 @@ body {
 
 /* ОСНОВНОЙ МАКЕТ: 2-колонный */
 
-.main-tiles-grid {
+.main-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr 2fr;
     gap: 16px;
-    margin-bottom: 24px;
+    flex: 1;
 }
 
-@media (max-width: 1200px) {
-    .main-tiles-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-@media (max-width: 768px) {
-    .main-tiles-grid {
-        grid-template-columns: 1fr;
-    }
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.right-top-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.right-bottom-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
 }
 
 /* Блоки категорий */
