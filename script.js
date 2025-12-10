@@ -31,31 +31,9 @@ document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') performSearch();
 });
 
-// Вкладки
-function switchTab(tabName, btn) {
-    // Скрыть все вкладки
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Убрать активный класс с кнопок
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    // Показать нужную вкладку
-    document.getElementById(tabName).classList.add('active');
-
-    // Активировать нужную кнопку
-    if (btn && btn.classList) {
-        btn.classList.add('active');
-    }
-}
-
-// Погода (используем Open-Meteo API - без ключа)
+// Погода (MET Norway API)
 async function loadWeather() {
     try {
-        // Берём погоду для Осло (Norwegian Meteorological Institute - MET Norway)
         const osloLat = 59.9139;
         const osloLon = 10.7522;
         document.querySelector('.weather-temp').textContent = '...';
@@ -65,7 +43,6 @@ async function loadWeather() {
         if (!resp.ok) throw new Error('MET API error');
         const json = await resp.json();
 
-        // Найдём ближайшую запись времени (timeseries[0])
         const timeseries = json.properties && json.properties.timeseries;
         if (timeseries && timeseries.length > 0) {
             const first = timeseries[0];
@@ -86,8 +63,8 @@ async function loadWeather() {
         }
     } catch (e) {
         document.querySelector('.weather-temp').textContent = '--°C';
-        document.querySelector('.weather-desc').textContent = 'Недоступно';
-        console.warn('Weather load error', e);
+        document.querySelector('.weather-desc').textContent = 'Unavailable';
+        console.warn('Weather error', e);
     }
 }
 
@@ -104,24 +81,53 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// Мини-сапёр
+// Steam API - получить скидки в гривнях
+async function loadSteamGames() {
+    try {
+        const response = await fetch('https://steamapi.xpaw.me/?format=json');
+        const data = await response.json();
+        const container = document.getElementById('steamGames');
+        
+        if (!data || !data.response || !data.response.apps) throw new Error('No data');
+        
+        const apps = data.response.apps.slice(0, 3);
+        container.innerHTML = '';
+        
+        apps.forEach(app => {
+            const priceUah = (app.price * 25).toFixed(0);
+            const gameEl = document.createElement('div');
+            gameEl.className = 'steam-game';
+            gameEl.innerHTML = `
+                <span class="game-name">${app.name}</span>
+                <span class="game-price">₴${priceUah}</span>
+            `;
+            container.appendChild(gameEl);
+        });
+    } catch (e) {
+        document.getElementById('steamGames').innerHTML = '<div class="steam-game">Steam API unavailable</div>';
+        console.warn('Steam API error', e);
+    }
+}
+
+// Мини-сапёр (ИСПРАВЛЕННАЯ ВЕРСИЯ)
 let minesweeperGrid = [];
 const GRID_SIZE = 5;
 const MINE_COUNT = 5;
+let gameState = 'idle';
 
 function initMinesweeper() {
     minesweeperGrid = [];
+    gameState = 'playing';
     
-    // Создаём сетку
     for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
         minesweeperGrid.push({
             isMine: false,
             isRevealed: false,
+            isFlagged: false,
             nearbyMines: 0
         });
     }
 
-    // Случайно расставляем мины
     let minesPlaced = 0;
     while (minesPlaced < MINE_COUNT) {
         const randomIndex = Math.floor(Math.random() * (GRID_SIZE * GRID_SIZE));
@@ -131,7 +137,6 @@ function initMinesweeper() {
         }
     }
 
-    // Считаем соседние мины
     for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
         if (!minesweeperGrid[i].isMine) {
             let count = 0;
@@ -155,19 +160,40 @@ function initMinesweeper() {
 
 function renderMinesweeper() {
     const grid = document.getElementById('mineGrid');
+    if (!grid) return;
+    
     grid.innerHTML = '';
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+    grid.style.gap = '4px';
 
     minesweeperGrid.forEach((cell, index) => {
         const cellEl = document.createElement('div');
         cellEl.className = 'mine-cell';
+        cellEl.style.cssText = `
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: ${cell.isRevealed ? 'rgba(100,100,150,0.3)' : 'rgba(139,63,230,0.3)'};
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        `;
 
         if (cell.isRevealed) {
-            cellEl.classList.add('revealed');
             if (cell.isMine) {
                 cellEl.textContent = '💣';
             } else if (cell.nearbyMines > 0) {
                 cellEl.textContent = cell.nearbyMines;
+                cellEl.style.color = '#ffd700';
             }
+        } else {
+            cellEl.textContent = '?';
+            cellEl.style.color = 'rgba(255,255,255,0.6)';
         }
 
         cellEl.addEventListener('click', () => revealCell(index));
@@ -176,27 +202,56 @@ function renderMinesweeper() {
 }
 
 function revealCell(index) {
+    if (gameState !== 'playing') return;
     if (minesweeperGrid[index].isRevealed) return;
 
     minesweeperGrid[index].isRevealed = true;
 
-    // Если открыли все клетки без мин - победа
+    if (minesweeperGrid[index].isMine) {
+        gameState = 'lost';
+        revealAll();
+        setTimeout(() => {
+            alert('💣 Game Over! You hit a mine.');
+            initMinesweeper();
+        }, 200);
+        return;
+    }
+
     const unrevealed = minesweeperGrid.filter(c => !c.isRevealed).length;
     if (unrevealed === MINE_COUNT) {
+        gameState = 'won';
         setTimeout(() => {
-            alert('🎉 Ты выиграл! Молодец!');
+            alert('🎉 You Won! Great job!');
             initMinesweeper();
-        }, 100);
+        }, 200);
     }
 
     renderMinesweeper();
 }
 
+function revealAll() {
+    minesweeperGrid.forEach(cell => {
+        cell.isRevealed = true;
+    });
+    renderMinesweeper();
+}
+
 function toggleMinesweeper() {
     const minesweeper = document.getElementById('minesweeper');
-    minesweeper.classList.toggle('hidden');
-    if (!minesweeper.classList.contains('hidden') && minesweeperGrid.length === 0) {
+    if (!minesweeper) return;
+    
+    minesweeper.style.display = minesweeper.style.display === 'none' ? 'block' : 'none';
+    
+    if (minesweeper.style.display !== 'none' && minesweeperGrid.length === 0) {
         initMinesweeper();
+    }
+}
+
+// AI Link Categorizer (stub)
+function categorizeLinks() {
+    const textarea = document.getElementById('linksInput');
+    if (textarea.value.trim()) {
+        alert('Paste links and click this button to categorize them using AI!');
     }
 }
 
@@ -204,4 +259,9 @@ function toggleMinesweeper() {
 window.addEventListener('load', () => {
     loadQuote();
     loadWeather();
+    loadSteamGames();
+    setTimeout(() => {
+        const minesweeper = document.getElementById('minesweeper');
+        if (minesweeper) minesweeper.style.display = 'none';
+    }, 100);
 });

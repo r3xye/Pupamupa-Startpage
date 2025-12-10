@@ -1,5 +1,5 @@
 :root {
-    --primary: #120616; /* much darker */
+    --primary: #120616;
     --secondary: #1a0f2a;
     --accent: #8b3fe6;
     --light: #c9a8ff;
@@ -102,19 +102,20 @@ body {
 
 .content {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1600px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 24px; /* less vertical whitespace */
+    gap: 16px;
 }
 
 /* Поиск */
 .search-container {
     display: flex;
     gap: 10px;
-    margin-bottom:  10px;
+    margin-bottom: 8px;
     animation: slideDown 0.6s ease-out;
+    justify-content: center;
 }
 
 .search-input {
@@ -122,7 +123,7 @@ body {
     max-width: 500px;
     padding: 12px 16px;
     border: 1px solid var(--border);
-    border-radius:  14px;
+    border-radius: 14px;
     background: var(--card-bg);
     color: var(--text);
     font-size: 16px;
@@ -159,65 +160,135 @@ body {
     transform: scale(1.05);
 }
 
-.search-btn:active {
-    transform: scale(0.95);
+/* ОСНОВНОЙ МАКЕТ: 2-колонный */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    flex: 1;
 }
 
-/* Вкладки */
-.tabs {
+.left-column {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: slideUp 0.6s ease-out;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.tab-btn {
-    padding:  8px 14px;
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.right-top-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.right-bottom-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+/* Блоки категорий */
+.category-block {
     border: 1px solid var(--border);
-    border-radius: 18px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.015), var(--card-bg));
+    padding: 16px;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.category-block:hover {
+    border-color: rgba(139,63,230,0.25);
+    box-shadow: 0 8px 24px rgba(139,63,230,0.08);
+}
+
+.category-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--light);
+    margin: 0;
+    padding: 0 4px;
+}
+
+.block-description {
+    font-size: 12px;
+    color: rgba(224, 166, 255, 0.6);
+    margin: 0;
+}
+
+/* Специфичные стили для блоков */
+.ai-block { border-left: 4px solid rgba(100, 150, 200, 0.3); }
+.quotes-block { border-left: 4px solid rgba(200, 100, 200, 0.3); }
+.entertainment-block { border-left: 4px solid rgba(255, 100, 150, 0.3); }
+.coding-block { border-left: 4px solid rgba(80, 180, 150, 0.3); }
+.security-block { border-left: 4px solid rgba(255, 120, 100, 0.3); }
+.productivity-block { border-left: 4px solid rgba(120, 200, 220, 0.3); }
+
+/* Textarea для AI */
+.links-textarea {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(20, 9, 25, 0.3);
     color: var(--text);
-    cursor: pointer;
-    font-size: 13px;
-    transition: all 0.18s ease;
-    backdrop-filter: blur(6px);
-    font-weight: 500;
+    font-family: monospace;
+    font-size: 12px;
+    resize: none;
+    backdrop-filter: blur(4px);
 }
 
-.tab-btn:hover {
+.links-textarea:focus {
+    outline: none;
     border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(157, 78, 221, 0.2);
 }
 
-.tab-btn.active {
-    background: linear-gradient(135deg, rgba(139,63,230,0.18), rgba(165,94,234,0.06));
-    border-color: rgba(139,63,230,0.32);
-    box-shadow: 0 6px 24px rgba(139,63,230,0.18);
+.categorize-btn {
+    padding: 10px 16px;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background: rgba(139, 63, 230, 0.2);
+    color: var(--light);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.categorize-btn:hover {
+    background: rgba(139, 63, 230, 0.4);
+}
+
+/* Цитаты */
+.quote-text {
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+    color: var(--light);
+    line-height: 1.6;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
 }
 
 /* Карточки ссылок */
-.tabs-content {
-    min-height: 300px;
-}
-
-.tab-content {
-    display: none;
-    animation: fadeIn 0.4s ease-in;
-}
-
-.tab-content.active {
-    display: block;
-}
-
- .links-grid {
+.links-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 8px; /* tighter tiles */
-    margin-bottom: 12px;
+    gap: 8px;
     grid-auto-flow: dense;
-    grid-auto-rows: 120px; /* fixed row height for compact tiling */
+    grid-auto-rows: 120px;
 }
 
 .link-card {
@@ -240,7 +311,6 @@ body {
     overflow: hidden;
 }
 
-/* site icon */
 .site-icon {
     width: 48px;
     height: 48px;
@@ -251,29 +321,10 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.35);
 }
 
-/* category accents */
-.link-card[data-category="learning"] { border-left: 4px solid rgba(80,150,255,0.18); }
-.link-card[data-category="entertainment"] { border-left: 4px solid rgba(255,100,150,0.12); }
-.link-card[data-category="security"] { border-left: 4px solid rgba(255,120,100,0.12); }
-.link-card[data-category="useful"] { border-left: 4px solid rgba(120,220,160,0.12); }
 .link-card:hover {
     border-color: rgba(139,63,230,0.4);
     transform: translateY(-6px) scale(1.03);
     box-shadow: 0 10px 30px rgba(139,63,230,0.12);
-    background: linear-gradient(180deg, rgba(139,63,230,0.04), rgba(165,94,234,0.02));
-}
-
-.link-card:active {
-    transform: translateY(-4px) scale(0.98);
-}
-.link-card .icon {
-    font-size: 28px;
-    transition: transform 0.18s ease, font-size 0.18s ease;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
-}
-
-.link-card:hover .icon {
-    transform: translateY(-6px) scale(1.12);
 }
 
 .link-card .label {
@@ -282,53 +333,87 @@ body {
     text-align: center;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+/* Мини-сапёр */
+.minesweeper-mini-block {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.015), var(--card-bg));
+    padding: 16px;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+    animation: fadeIn 0.6s ease-out;
 }
 
-/* Виджеты */
-.widgets {
+.minesweeper-container {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+}
+
+.minesweeper-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--light);
+    margin: 0;
+}
+
+.minesweeper-grid {
+    display: none;
+    grid-template-columns: repeat(5, 35px);
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.mine-cell {
+    width: 35px;
+    height: 35px;
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    background: rgba(139, 63, 230, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.mine-cell:hover {
+    background: rgba(139, 63, 230, 0.4);
+}
+
+/* Виджеты (погода, время, Steam) */
+.widgets-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .widget {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px 25px;
-    border: 2px solid var(--border);
-    border-radius:  20px;
-    background:  var(--card-bg);
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.015), var(--card-bg));
     backdrop-filter: blur(10px);
-    min-width: 180px;
     gap: 10px;
     transition: all 0.3s ease;
     animation: slideUp 0.6s ease-out;
 }
+
 .widget:hover {
-    border-color: rgba(139,63,230,0.3);
+    border-color: rgba(139,63,230,0.25);
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(139,63,230,0.1);
-}
-
-.quote-widget {
-    max-width: 400px;
-}
-
-.quote-text {
-    font-size: 14px;
-    font-style: italic;
-    text-align: center;
-    color: var(--light);
-    line-height: 1.6;
-    min-height: 50px;
-    display: flex;
-    align-items: center;
+    box-shadow: 0 8px 24px rgba(139,63,230,0.08);
 }
 
 .weather-widget {
@@ -337,7 +422,7 @@ body {
 
 .weather-temp {
     font-size: 28px;
-    font-weight:  bold;
+    font-weight: bold;
     color: var(--accent);
 }
 
@@ -352,17 +437,59 @@ body {
 
 .time-display {
     font-size: 32px;
-    font-weight:  bold;
+    font-weight: bold;
     font-family: 'Courier New', monospace;
     color: var(--accent);
     letter-spacing: 2px;
 }
 
+.steam-widget {
+    text-align: center;
+}
+
+.widget-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--light);
+    margin: 0;
+}
+
+.steam-games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.steam-game {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text);
+    padding: 4px 8px;
+    background: rgba(139, 63, 230, 0.1);
+    border-radius: 4px;
+}
+
+.game-name {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.game-price {
+    color: var(--accent);
+    font-weight: bold;
+    margin-left: 8px;
+}
+
 .mini-btn {
-    padding: 8px 12px;
+    padding: 8px 16px;
     border: 1px solid var(--border);
-    border-radius: 15px;
-    background: rgba(157, 78, 221, 0.2);
+    border-radius: 8px;
+    background: rgba(139, 63, 230, 0.2);
     color: var(--light);
     font-size: 14px;
     cursor: pointer;
@@ -370,65 +497,8 @@ body {
 }
 
 .mini-btn:hover {
-    background: rgba(157, 78, 221, 0.4);
+    background: rgba(139, 63, 230, 0.4);
     border-color: var(--accent);
-}
-
-/* Мини-сапёр */
-.minesweeper-widget {
-    position: fixed;
-    bottom: 120px;
-    right: 20px;
-    z-index:  100;
-}
-
-.minesweeper {
-    position: absolute;
-    bottom: 60px;
-    right: 0;
-    background: var(--card-bg);
-    border: 2px solid var(--accent);
-    border-radius: 15px;
-    padding: 15px;
-    display: grid;
-    animation: popIn 0.3s ease;
-}
-
-.minesweeper.hidden {
-    display: none;
-}
-
-.minesweeper-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 30px);
-    gap: 5px;
-}
-
-.mine-cell {
-    width: 30px;
-    height: 30px;
-    border: 1px solid var(--accent);
-    border-radius: 5px;
-    background: rgba(157, 78, 221, 0.2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    transition: all 0.2s ease;
-}
-
-.mine-cell:hover {
-    background: rgba(157, 78, 221, 0.4);
-}
-
-.mine-cell.revealed {
-    background: rgba(157, 78, 221, 0.1);
-    border-color: var(--light);
-}
-
-.mine-cell.mine.revealed {
-    background: rgba(205, 92, 92, 0.5);
 }
 
 /* Логотип */
@@ -436,6 +506,7 @@ body {
     display: flex;
     justify-content: center;
     animation: fadeIn 1s ease-out 0.5s both;
+    margin-top: 20px;
 }
 
 .logo {
@@ -454,121 +525,67 @@ body {
     box-shadow: 0 0 30px rgba(157, 78, 221, 0.4);
 }
 
-/* small decorative badges on cards */
-.link-card::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    border-radius: 12px;
-    pointer-events: none;
-    background-image: linear-gradient(135deg, rgba(255,255,255,0.012), transparent 30%);
-    opacity: 0.8;
+/* Адаптив для планшетов */
+@media (max-width: 1024px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .right-top-row {
+        grid-template-columns: 1fr;
+    }
+
+    .right-bottom-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* reduce empty space on small screens */
+/* Адаптив для мобилы */
 @media (max-width: 768px) {
-    .content { gap: 16px; }
-    .links-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
-    .link-card { padding: 14px 8px; }
-}
+    .container {
+        padding: 15px 10px;
+    }
 
-/* Анимации */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
+    .main-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
-    to {
-        opacity: 1;
-    }
-}
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform:  translateY(-20px);
+    .right-bottom-row {
+        grid-template-columns: 1fr;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+    .category-block {
+        min-height: auto;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-@keyframes popIn {
-    from {
-        opacity: 0;
-        transform:  scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform:  scale(1);
-    }
-}
-
-.fade-in {
-    animation:  fadeIn 0.6s ease-out;
-}
-
-/* Адаптив */
-@media (max-width: 768px) {
     .links-grid {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 15px;
+        gap: 8px;
     }
 
-    .tabs {
-        gap: 10px;
-    }
-
-    .tab-btn {
-        padding:  8px 15px;
-        font-size: 12px;
+    .widgets-row {
+        grid-template-columns: 1fr;
     }
 
     .search-input {
         max-width: 100%;
     }
-
-    .widgets {
-        gap: 15px;
-    }
-
-    .widget {
-        min-width: 150px;
-        padding: 15px 20px;
-    }
-
-    .minesweeper-widget {
-        bottom: 20px;
-        right: 10px;
-    }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 20px 10px;
-    }
-
     .link-card {
-        padding: 20px 10px;
+        padding: 10px;
+        min-height: 100px;
     }
 
     .logo {
         width: 60px;
         height: 60px;
+    }
+
+    .category-block {
+        padding: 12px;
     }
 
     .time-display {
