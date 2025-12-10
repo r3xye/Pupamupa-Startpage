@@ -55,21 +55,39 @@ function switchTab(tabName, btn) {
 // Погода (используем Open-Meteo API - без ключа)
 async function loadWeather() {
     try {
-        // Получаем координаты через геолокацию
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
-            const response = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`
-            );
-            const data = await response.json();
-            const temp = Math.round(data.current.temperature_2m);
-            
-            document.querySelector('.weather-temp').textContent = `${temp}°C`;
-            document.querySelector('.weather-desc').textContent = 'Текущая погода';
-        });
+        // Берём погоду для Осло (Norwegian Meteorological Institute - MET Norway)
+        const osloLat = 59.9139;
+        const osloLon = 10.7522;
+        document.querySelector('.weather-temp').textContent = '...';
+        document.querySelector('.weather-desc').textContent = 'Oslo, fetching...';
+
+        const resp = await fetch(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${osloLat}&lon=${osloLon}`);
+        if (!resp.ok) throw new Error('MET API error');
+        const json = await resp.json();
+
+        // Найдём ближайшую запись времени (timeseries[0])
+        const timeseries = json.properties && json.properties.timeseries;
+        if (timeseries && timeseries.length > 0) {
+            const first = timeseries[0];
+            const instant = first.data && first.data.instant && first.data.instant.details;
+            const summary = first.data && (first.data.next_1_hours || first.data.next_6_hours || first.data.next_12_hours);
+            const temp = instant && instant.air_temperature;
+            const desc = summary && summary.summary && summary.summary.symbol_code ? summary.summary.symbol_code.replace(/_/g, ' ') : '—';
+
+            if (typeof temp === 'number') {
+                document.querySelector('.weather-temp').textContent = `${Math.round(temp)}°C`;
+            } else {
+                document.querySelector('.weather-temp').textContent = '--°C';
+            }
+
+            document.querySelector('.weather-desc').textContent = `Oslo — ${desc}`;
+        } else {
+            throw new Error('No data');
+        }
     } catch (e) {
         document.querySelector('.weather-temp').textContent = '--°C';
         document.querySelector('.weather-desc').textContent = 'Недоступно';
+        console.warn('Weather load error', e);
     }
 }
 
