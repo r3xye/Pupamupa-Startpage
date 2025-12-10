@@ -211,11 +211,13 @@ body {
     display: block;
 }
 
-.links-grid {
+ .links-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px; /* tighter tiles */
-    margin-bottom: 16px;
+    gap: 8px; /* tighter tiles */
+    margin-bottom: 12px;
+    grid-auto-flow: dense;
+    grid-auto-rows: 120px; /* fixed row height for compact tiling */
 }
 
 .link-card {
@@ -223,9 +225,9 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 18px 10px;
+    padding: 12px 8px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     background: linear-gradient(180deg, rgba(255,255,255,0.012), var(--card-bg));
     color: var(--text);
     text-decoration: none;
@@ -233,8 +235,27 @@ body {
     transition: transform 0.18s ease, box-shadow 0.18s ease;
     backdrop-filter: blur(6px);
     gap: 6px;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
+/* site icon */
+.site-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    padding: 6px;
+    object-fit: contain;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+/* category accents */
+.link-card[data-category="learning"] { border-left: 4px solid rgba(80,150,255,0.18); }
+.link-card[data-category="entertainment"] { border-left: 4px solid rgba(255,100,150,0.12); }
+.link-card[data-category="security"] { border-left: 4px solid rgba(255,120,100,0.12); }
+.link-card[data-category="useful"] { border-left: 4px solid rgba(120,220,160,0.12); }
 .link-card:hover {
     border-color: rgba(139,63,230,0.4);
     transform: translateY(-6px) scale(1.03);
