@@ -220,13 +220,17 @@ function revealCell(index) {
         return;
     }
 
-    const unrevealed = minesweeperGrid.filter(c => !c.isRevealed).length;
-    if (unrevealed === MINE_COUNT) {
+    // Проверка победы: открыты все НЕ-мины
+    const totalNonMines = (GRID_SIZE * GRID_SIZE) - MINE_COUNT;
+    const revealedNonMines = minesweeperGrid.filter(c => !c.isMine && c.isRevealed).length;
+    if (revealedNonMines === totalNonMines) {
         gameState = 'won';
+        revealAll();
         setTimeout(() => {
             alert('🎉 You Won! Great job!');
             initMinesweeper();
         }, 200);
+        return;
     }
 
     renderMinesweeper();
