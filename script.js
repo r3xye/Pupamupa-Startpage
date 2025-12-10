@@ -107,7 +107,7 @@ async function loadSteamGames() {
             container.appendChild(gameEl);
         });
     } catch (e) {
-        document.getElementById('steamGames').innerHTML = '<div class="steam-game">Steam API unavailable</div>';
+        document.getElementById('steamGames').innerHTML = '<div class="steam-game">Потом сделаю</div>';
         console.warn('Steam API error', e);
     }
 }
@@ -258,7 +258,7 @@ function toggleMinesweeper() {
 function categorizeLinks() {
     const textarea = document.getElementById('linksInput');
     if (textarea.value.trim()) {
-        alert('Paste links and click this button to categorize them using AI!');
+        alert('Ты на что надеялся?)) мне впадлу это реализовывать.');
     }
 }
 
@@ -267,8 +267,6 @@ window.addEventListener('load', () => {
     loadQuote();
     loadWeather();
     loadSteamGames();
-    setTimeout(() => {
-        const minesweeper = document.getElementById('minesweeper');
-        if (minesweeper) minesweeper.style.display = 'none';
-    }, 100);
+    // Initialize minesweeper and keep it visible by default
+    initMinesweeper();
 });
