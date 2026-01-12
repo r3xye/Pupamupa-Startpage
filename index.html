@@ -16,23 +16,18 @@
 
 		<div class="content">
 			<div class="search-container fade-in">
-				<input type="text" id="searchInput" class="search-input" placeholder="Поиск в Google...">
+				<input type="text" id="searchInput" class="search-input" placeholder="Search with Google...">
 				<button class="search-btn" onclick="performSearch()">🔍</button>
 			</div>
 
 			<div class="main-grid">
 				<div class="left-column">
 					<div class="category-block ai-block fade-in">
-						<h3 class="category-title">🤖 AI Link Categorizer</h3>
-						<p class="block-description">Paste a list of links here and let AI categorize them for you</p>
+						<h3 class="category-title">🧭 Link Categorizer</h3>
+						<p class="block-description">Paste your links and I will sort them</p>
 						<textarea id="linksInput" class="links-textarea" placeholder="https://google.com&#10;https://github.com&#10;..."></textarea>
-						<button onclick="categorizeLinks()" class="categorize-btn">Categorize Links</button>
-					</div>
-
-					<div class="category-block quotes-block fade-in">
-						<h3 class="category-title">💭 Quotes</h3>
-						<div id="quote" class="quote-text">Loading...</div>
-						<button onclick="loadQuote()" class="mini-btn">New Quote</button>
+						<button onclick="categorizeLinks()" class="categorize-btn">Update Categories</button>
+						<div id="categorizerResults" class="categorizer-results"></div>
 					</div>
 				</div>
 
@@ -57,6 +52,7 @@
 									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
 									<span class="label">Spotify</span>
 								</a>
+								<div class="tile-placeholder tile-placeholder-entertainment tile-placeholder-card">In Development</div>
 							</div>
 						</div>
 
@@ -79,6 +75,7 @@
 									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=quickref.me&sz=64" alt="QuickRef">
 									<span class="label">QuickRef.me</span>
 								</a>
+								<div class="tile-placeholder tile-placeholder-coding tile-placeholder-card">In Development</div>
 							</div>
 						</div>
 					</div>
@@ -96,6 +93,7 @@
 									<span class="label">HackTricks</span>
 								</a>
 							</div>
+							<div class="tile-placeholder tile-placeholder-security tile-placeholder-fill">In Development</div>
 						</div>
 
 						<div class="category-block productivity-block fade-in">
@@ -110,11 +108,13 @@
 									<span class="label">Slack</span>
 								</a>
 							</div>
+							<div class="tile-placeholder tile-placeholder-productivity tile-placeholder-fill">In Development</div>
 						</div>
 
 						<div id="minesweeper" class="category-block minesweeper-block fade-in">
 							<h3 class="category-title">💣 Minesweeper</h3>
-							<button onclick="toggleMinesweeper()" class="mini-btn">Start Game</button>
+							<div id="mineStatus" class="mine-status">Click a cell to start</div>
+							<button onclick="startMinesweeper()" class="mini-btn">New Game</button>
 							<div id="mineGrid" class="minesweeper-grid"></div>
 						</div>
 					</div>
@@ -152,4 +152,3 @@
 	<script src="script.js"></script>
 </body>
 </html>
-

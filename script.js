@@ -1,25 +1,4 @@
-// Цитаты
-const quotes = [
-    "Код — это поэзия, написанная для машин.",
-    "Лучшее время для посадки дерева было 20 лет назад.  Второе лучшее время — сейчас.",
-    "Не бойся ошибок, бойся не делать попыток.",
-    "Качество кода — это инвестиция в будущее.",
-    "Simplicitas est summa sophisticatio.",
-    "First, solve the problem. Then, write the code.",
-    "Отладка в два раза сложнее, чем написание кода.",
-    "Заранее оптимизация — корень всех зол.",
-    "Код, который я писал год назад — это дерьмо.",
-    "Любой достаточно продвинутый код неотличим от магии.",
-    "Выглядит неправильно, но работает...  пока.",
-    "Это не ошибка, это фича! ",
-];
-
-function loadQuote() {
-    const quote = quotes[Math.floor(Math.random() * quotes.length)];
-    document.getElementById('quote').textContent = `"${quote}"`;
-}
-
-// Поиск
+// Search
 function performSearch() {
     const searchInput = document.getElementById('searchInput');
     if (searchInput.value.trim()) {
@@ -31,7 +10,7 @@ document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') performSearch();
 });
 
-// Погода (MET Norway API)
+// Weather (MET Norway API)
 async function loadWeather() {
     try {
         const osloLat = 59.9139;
@@ -68,7 +47,7 @@ async function loadWeather() {
     }
 }
 
-// Время
+// Time
 function updateTime() {
     const now = new Date();
     let hours = now.getHours();
@@ -84,44 +63,88 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// Steam API - получить скидки в гривнях
+// Steam API - fetch discounts in UAH
 async function loadSteamGames() {
+    const container = document.getElementById('steamGames');
+    if (!container) return;
+    container.innerHTML = '<div class="steam-game">Loading...</div>';
+
     try {
-        const response = await fetch('https://steamapi.xpaw.me/?format=json');
+        const response = await fetch('https://store.steampowered.com/api/featuredcategories?cc=ua&l=uk');
+        if (!response.ok) throw new Error('Steam store error');
         const data = await response.json();
-        const container = document.getElementById('steamGames');
-        
-        if (!data || !data.response || !data.response.apps) throw new Error('No data');
-        
-        const apps = data.response.apps.slice(0, 3);
+        const items = data && data.specials && data.specials.items ? data.specials.items : [];
+        if (!items.length) throw new Error('No specials');
+
+        const formatter = new Intl.NumberFormat('uk-UA', {
+            style: 'currency',
+            currency: 'UAH',
+            maximumFractionDigits: 0
+        });
+
+        const top = items
+            .slice()
+            .sort((a, b) => (b.discount_percent || 0) - (a.discount_percent || 0))
+            .slice(0, 3);
+
         container.innerHTML = '';
-        
-        apps.forEach(app => {
-            const priceUah = (app.price * 25).toFixed(0);
+
+        top.forEach(app => {
+            const finalPrice = typeof app.final_price === 'number' ? app.final_price / 100 : null;
+            const priceText = finalPrice === 0 ? 'Free' : (finalPrice ? formatter.format(finalPrice) : '—');
+            const discountText = app.discount_percent ? `-${app.discount_percent}%` : '';
             const gameEl = document.createElement('div');
             gameEl.className = 'steam-game';
             gameEl.innerHTML = `
                 <span class="game-name">${app.name}</span>
-                <span class="game-price">₴${priceUah}</span>
+                <span class="game-price">${discountText} ${priceText}</span>
             `;
             container.appendChild(gameEl);
         });
     } catch (e) {
-        document.getElementById('steamGames').innerHTML = '<div class="steam-game">Потом сделаю</div>';
         console.warn('Steam API error', e);
+        await loadSteamGamesLegacy(container);
     }
 }
 
-// Мини-сапёр (ИСПРАВЛЕННАЯ ВЕРСИЯ)
-let minesweeperGrid = [];
-const GRID_SIZE = 5;
-const MINE_COUNT = 5;
-let gameState = 'idle';
+async function loadSteamGamesLegacy(container) {
+    try {
+        const response = await fetch('https://steamapi.xpaw.me/?format=json');
+        if (!response.ok) throw new Error('Legacy Steam API error');
+        const data = await response.json();
+        if (!data || !data.response || !data.response.apps) throw new Error('No data');
 
-function initMinesweeper() {
+        const apps = data.response.apps.slice(0, 3);
+        container.innerHTML = '';
+
+        apps.forEach(app => {
+            const priceUah = app.price ? `₴${(app.price * 25).toFixed(0)}` : '—';
+            const gameEl = document.createElement('div');
+            gameEl.className = 'steam-game';
+            gameEl.innerHTML = `
+                <span class="game-name">${app.name}</span>
+                <span class="game-price">${priceUah}</span>
+            `;
+            container.appendChild(gameEl);
+        });
+    } catch (e) {
+        container.innerHTML = '<div class="steam-game">Steam API unavailable</div>';
+        console.warn('Steam legacy API error', e);
+    }
+}
+
+// Minesweeper
+let minesweeperGrid = [];
+const GRID_SIZE = 8;
+const MINE_COUNT = 10;
+let gameState = 'ready';
+let minesPlaced = false;
+
+function startMinesweeper() {
     minesweeperGrid = [];
-    gameState = 'playing';
-    
+    minesPlaced = false;
+    gameState = 'ready';
+
     for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
         minesweeperGrid.push({
             isMine: false,
@@ -131,108 +154,155 @@ function initMinesweeper() {
         });
     }
 
-    let minesPlaced = 0;
-    while (minesPlaced < MINE_COUNT) {
+    updateMineStatus('Click a cell to start');
+    renderMinesweeper();
+}
+
+function placeMines(excludeIndex) {
+    let placed = 0;
+    while (placed < MINE_COUNT) {
         const randomIndex = Math.floor(Math.random() * (GRID_SIZE * GRID_SIZE));
+        if (randomIndex === excludeIndex) continue;
         if (!minesweeperGrid[randomIndex].isMine) {
             minesweeperGrid[randomIndex].isMine = true;
-            minesPlaced++;
+            placed++;
         }
     }
 
     for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
         if (!minesweeperGrid[i].isMine) {
-            let count = 0;
-            const row = Math.floor(i / GRID_SIZE);
-            const col = i % GRID_SIZE;
-
-            for (let r = row - 1; r <= row + 1; r++) {
-                for (let c = col - 1; c <= col + 1; c++) {
-                    if (r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE) {
-                        const index = r * GRID_SIZE + c;
-                        if (minesweeperGrid[index].isMine) count++;
-                    }
-                }
-            }
-            minesweeperGrid[i].nearbyMines = count;
+            minesweeperGrid[i].nearbyMines = countNearbyMines(i);
         }
     }
+}
 
-    renderMinesweeper();
+function countNearbyMines(index) {
+    let count = 0;
+    const row = Math.floor(index / GRID_SIZE);
+    const col = index % GRID_SIZE;
+
+    for (let r = row - 1; r <= row + 1; r++) {
+        for (let c = col - 1; c <= col + 1; c++) {
+            if (r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE) {
+                const idx = r * GRID_SIZE + c;
+                if (minesweeperGrid[idx].isMine) count++;
+            }
+        }
+    }
+    return count;
 }
 
 function renderMinesweeper() {
     const grid = document.getElementById('mineGrid');
     if (!grid) return;
-    
+
     grid.innerHTML = '';
-    grid.style.display = 'grid';
     grid.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
-    grid.style.gap = '4px';
 
     minesweeperGrid.forEach((cell, index) => {
         const cellEl = document.createElement('div');
         cellEl.className = 'mine-cell';
-        cellEl.style.cssText = `
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: ${cell.isRevealed ? 'rgba(100,100,150,0.3)' : 'rgba(139,63,230,0.3)'};
-            border: 1px solid var(--accent);
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-        `;
 
-        if (cell.isRevealed) {
+        if (cell.isRevealed) cellEl.classList.add('revealed');
+        if (cell.isFlagged) cellEl.classList.add('flagged');
+        if (cell.isMine && gameState !== 'playing' && gameState !== 'ready') {
+            cellEl.classList.add('mine');
+        }
+
+        if (cell.isFlagged && !cell.isRevealed) {
+            cellEl.textContent = '🚩';
+        } else if (cell.isRevealed) {
             if (cell.isMine) {
                 cellEl.textContent = '💣';
             } else if (cell.nearbyMines > 0) {
                 cellEl.textContent = cell.nearbyMines;
                 cellEl.style.color = '#ffd700';
+            } else {
+                cellEl.textContent = '';
             }
         } else {
-            cellEl.textContent = '?';
-            cellEl.style.color = 'rgba(255,255,255,0.6)';
+            cellEl.textContent = '';
         }
 
-        cellEl.addEventListener('click', () => revealCell(index));
+        cellEl.addEventListener('click', () => handleCellClick(index));
+        cellEl.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            toggleFlag(index);
+        });
         grid.appendChild(cellEl);
     });
 }
 
+function handleCellClick(index) {
+    if (gameState === 'lost' || gameState === 'won') return;
+    const cell = minesweeperGrid[index];
+    if (cell.isRevealed || cell.isFlagged) return;
+
+    if (!minesPlaced) {
+        placeMines(index);
+        minesPlaced = true;
+        gameState = 'playing';
+        updateMineStatus('Good luck!');
+    }
+
+    revealCell(index);
+    renderMinesweeper();
+}
+
 function revealCell(index) {
-    if (gameState !== 'playing') return;
-    if (minesweeperGrid[index].isRevealed) return;
+    const cell = minesweeperGrid[index];
+    if (cell.isRevealed || cell.isFlagged) return;
 
-    minesweeperGrid[index].isRevealed = true;
+    cell.isRevealed = true;
 
-    if (minesweeperGrid[index].isMine) {
+    if (cell.isMine) {
         gameState = 'lost';
         revealAll();
-        setTimeout(() => {
-            alert('💣 Game Over! You hit a mine.');
-            initMinesweeper();
-        }, 200);
+        updateMineStatus('Boom. You lost.');
         return;
     }
 
-    // Проверка победы: открыты все НЕ-мины
-    const totalNonMines = (GRID_SIZE * GRID_SIZE) - MINE_COUNT;
-    const revealedNonMines = minesweeperGrid.filter(c => !c.isMine && c.isRevealed).length;
-    if (revealedNonMines === totalNonMines) {
-        gameState = 'won';
-        revealAll();
-        setTimeout(() => {
-            alert('🎉 You Won! Great job!');
-            initMinesweeper();
-        }, 200);
-        return;
+    if (cell.nearbyMines === 0) {
+        floodReveal(index);
     }
 
+    checkWin();
+}
+
+function floodReveal(startIndex) {
+    const queue = [startIndex];
+    const visited = new Set();
+
+    while (queue.length > 0) {
+        const index = queue.shift();
+        if (visited.has(index)) continue;
+        visited.add(index);
+
+        const cell = minesweeperGrid[index];
+        if (cell.isFlagged) continue;
+        cell.isRevealed = true;
+
+        if (cell.nearbyMines === 0) {
+            const row = Math.floor(index / GRID_SIZE);
+            const col = index % GRID_SIZE;
+
+            for (let r = row - 1; r <= row + 1; r++) {
+                for (let c = col - 1; c <= col + 1; c++) {
+                    if (r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE) {
+                        const idx = r * GRID_SIZE + c;
+                        if (!visited.has(idx)) queue.push(idx);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function toggleFlag(index) {
+    if (gameState === 'lost' || gameState === 'won') return;
+    const cell = minesweeperGrid[index];
+    if (cell.isRevealed) return;
+    cell.isFlagged = !cell.isFlagged;
     renderMinesweeper();
 }
 
@@ -240,33 +310,180 @@ function revealAll() {
     minesweeperGrid.forEach(cell => {
         cell.isRevealed = true;
     });
-    renderMinesweeper();
 }
 
-function toggleMinesweeper() {
-    const minesweeper = document.getElementById('minesweeper');
-    if (!minesweeper) return;
-    
-    minesweeper.style.display = minesweeper.style.display === 'none' ? 'block' : 'none';
-    
-    if (minesweeper.style.display !== 'none' && minesweeperGrid.length === 0) {
-        initMinesweeper();
+function checkWin() {
+    const totalNonMines = (GRID_SIZE * GRID_SIZE) - MINE_COUNT;
+    const revealedNonMines = minesweeperGrid.filter(c => !c.isMine && c.isRevealed).length;
+    if (revealedNonMines === totalNonMines) {
+        gameState = 'won';
+        revealAll();
+        updateMineStatus('Victory!');
     }
 }
 
-// AI Link Categorizer (stub)
+function updateMineStatus(text) {
+    const statusEl = document.getElementById('mineStatus');
+    if (statusEl) statusEl.textContent = text;
+}
+
+// Link Categorizer
+const CATEGORY_DEFS = [
+    { name: 'Video', domains: ['youtube.com', 'twitch.tv', 'tiktok.com', 'vimeo.com'] },
+    { name: 'Music', domains: ['spotify.com', 'soundcloud.com', 'music.yandex.ru', 'bandcamp.com'] },
+    { name: 'Games', domains: ['store.steampowered.com', 'steamcommunity.com', 'epicgames.com', 'itch.io', 'gog.com'] },
+    { name: 'Development', domains: ['github.com', 'gitlab.com', 'bitbucket.org', 'codepen.io', 'npmjs.com', 'developer.mozilla.org', 'stackoverflow.com'] },
+    { name: 'Security', domains: ['tryhackme.com', 'hacktricks.xyz', 'hackthebox.com'] },
+    { name: 'Shopping', domains: ['amazon.com', 'aliexpress.com', 'ozon.ru', 'wildberries.ru', 'ebay.com'] },
+    { name: 'Social', domains: ['x.com', 'twitter.com', 'vk.com', 'facebook.com', 'instagram.com', 'reddit.com', 'discord.com'] },
+    { name: 'News', domains: ['news.ycombinator.com', 'bbc.com', 'meduza.io', 'lenta.ru'] },
+    { name: 'Tools', domains: ['drive.google.com', 'docs.google.com', 'notion.so', 'trello.com', 'figma.com'] },
+    { name: 'Search', domains: ['google.com', 'duckduckgo.com', 'yandex.ru', 'bing.com'] },
+    { name: 'Other', domains: [] }
+];
+
+const LINKS_STORAGE_KEY = 'pupamupa_links';
+let categorizeTimer = null;
+
 function categorizeLinks() {
     const textarea = document.getElementById('linksInput');
-    if (textarea.value.trim()) {
-        alert('Ты на что надеялся?)) мне впадлу это реализовывать.');
+    const resultsEl = document.getElementById('categorizerResults');
+    if (!textarea || !resultsEl) return;
+
+    const urls = parseLinksFromText(textarea.value);
+    saveLinks(urls.map(url => url.href));
+
+    const categories = new Map();
+    urls.forEach(url => {
+        const category = findCategory(url.hostname);
+        if (!categories.has(category)) categories.set(category, []);
+        categories.get(category).push({
+            href: url.href,
+            label: url.hostname + (url.pathname !== '/' ? url.pathname : '')
+        });
+    });
+
+    resultsEl.innerHTML = '';
+
+    if (categories.size === 0) {
+        resultsEl.innerHTML = '<div class="category-group"><h4>Nothing to sort</h4></div>';
+        return;
+    }
+
+    CATEGORY_DEFS.forEach(def => {
+        const items = categories.get(def.name);
+        if (!items || items.length === 0) return;
+        resultsEl.appendChild(buildCategoryGroup(def.name, items));
+    });
+}
+
+function scheduleCategorize() {
+    if (categorizeTimer) clearTimeout(categorizeTimer);
+    categorizeTimer = setTimeout(() => {
+        categorizeLinks();
+    }, 250);
+}
+
+function saveLinks(links) {
+    localStorage.setItem(LINKS_STORAGE_KEY, JSON.stringify(links));
+}
+
+function restoreLinksInput() {
+    const textarea = document.getElementById('linksInput');
+    if (!textarea) return;
+    const saved = loadLinks();
+    if (saved.length > 0) {
+        textarea.value = saved.join('\n');
     }
 }
 
-// Инициализация
+function loadLinks() {
+    const saved = localStorage.getItem(LINKS_STORAGE_KEY);
+    if (!saved) return [];
+    try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function parseLinksFromText(text) {
+    const lines = text.split(/\n|,/).map(line => line.trim()).filter(Boolean);
+    const map = new Map();
+    lines.forEach(line => {
+        const tokens = line.split(/\s+/).filter(Boolean);
+        tokens.forEach(token => {
+            const url = normalizeUrl(token);
+            if (!url) return;
+            if (!map.has(url.href)) {
+                map.set(url.href, url);
+            }
+        });
+    });
+    return Array.from(map.values());
+}
+
+function normalizeUrl(raw) {
+    let input = raw.trim();
+    if (!input) return null;
+    if (!/^https?:\/\//i.test(input)) {
+        input = `https://${input}`;
+    }
+    try {
+        return new URL(input);
+    } catch {
+        return null;
+    }
+}
+
+function findCategory(hostname) {
+    const host = hostname.replace(/^www\./, '');
+    for (const def of CATEGORY_DEFS) {
+        for (const domain of def.domains) {
+            if (host === domain || host.endsWith(`.${domain}`)) {
+                return def.name;
+            }
+        }
+    }
+    return 'Other';
+}
+
+function buildCategoryGroup(name, items) {
+    const group = document.createElement('div');
+    group.className = 'category-group';
+
+    const title = document.createElement('h4');
+    title.textContent = `${name} (${items.length})`;
+    group.appendChild(title);
+
+    const list = document.createElement('div');
+    list.className = 'category-links';
+
+    items.forEach(item => {
+        const linkEl = document.createElement('a');
+        linkEl.className = 'category-link';
+        linkEl.href = item.href;
+        linkEl.target = '_blank';
+        linkEl.rel = 'noopener';
+        linkEl.textContent = item.label;
+        list.appendChild(linkEl);
+    });
+
+    group.appendChild(list);
+    return group;
+}
+
+// Init
 window.addEventListener('load', () => {
-    loadQuote();
     loadWeather();
     loadSteamGames();
-    // Initialize minesweeper and keep it visible by default
-    initMinesweeper();
+    startMinesweeper();
+    restoreLinksInput();
+    categorizeLinks();
+
+    const textarea = document.getElementById('linksInput');
+    if (textarea) {
+        textarea.addEventListener('input', scheduleCategorize);
+    }
 });

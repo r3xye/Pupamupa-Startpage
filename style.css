@@ -31,7 +31,7 @@ body {
     position: relative;
 }
 
-/* Анимированный фон */
+/* Animated background */
 .animated-background {
     position: fixed;
     top: 0;
@@ -109,7 +109,7 @@ body {
     gap: 16px;
 }
 
-/* Поиск */
+/* Search */
 .search-container {
     display: flex;
     gap: 10px;
@@ -160,7 +160,7 @@ body {
     transform: scale(1.05);
 }
 
-/* ОСНОВНОЙ МАКЕТ: 2-колонный */
+/* Main layout: two columns */
 
 .main-grid {
     display: grid;
@@ -193,7 +193,7 @@ body {
     gap: 16px;
 }
 
-/* Блоки категорий */
+/* Category blocks */
 .category-block {
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -227,15 +227,14 @@ body {
     margin: 0;
 }
 
-/* Специфичные стили для блоков */
+/* Block-specific styles */
 .ai-block { border-left: 4px solid rgba(100, 150, 200, 0.3); }
-.quotes-block { border-left: 4px solid rgba(200, 100, 200, 0.3); }
 .entertainment-block { border-left: 4px solid rgba(255, 100, 150, 0.3); }
 .coding-block { border-left: 4px solid rgba(80, 180, 150, 0.3); }
 .security-block { border-left: 4px solid rgba(255, 120, 100, 0.3); }
 .productivity-block { border-left: 4px solid rgba(120, 200, 220, 0.3); }
 
-/* Textarea для AI */
+/* Categorizer textarea */
 .links-textarea {
     flex: 1;
     padding: 10px;
@@ -269,21 +268,102 @@ body {
     background: rgba(139, 63, 230, 0.4);
 }
 
-/* Цитаты */
-.quote-text {
-    font-size: 14px;
-    font-style: italic;
-    text-align: center;
+/* Link categorizer */
+.categorizer-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 240px;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(20, 9, 25, 0.25);
+}
+
+.categorizer-results:empty {
+    display: none;
+}
+
+.category-group {
+    border: 1px solid rgba(139, 63, 230, 0.2);
+    border-radius: 8px;
+    padding: 8px;
+    background: rgba(139, 63, 230, 0.08);
+}
+
+.category-group h4 {
+    font-size: 12px;
     color: var(--light);
-    line-height: 1.6;
-    flex: 1;
+    margin-bottom: 6px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.category-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.category-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.category-link:hover {
+    background: rgba(139, 63, 230, 0.2);
+}
+
+.tile-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    font-size: 11px;
+    color: rgba(224, 166, 255, 0.45);
+    border: 1px dashed rgba(139, 63, 230, 0.3);
+    border-radius: 10px;
+    background: rgba(139, 63, 230, 0.06);
 }
 
-/* Карточки ссылок */
+.tile-placeholder-fill {
+    flex: 1;
+    min-height: 120px;
+}
+
+.tile-placeholder-card {
+    min-height: 120px;
+    grid-column: span 2;
+}
+
+.tile-placeholder-entertainment {
+    border-color: rgba(255, 100, 150, 0.35);
+    background: rgba(255, 100, 150, 0.06);
+}
+
+.tile-placeholder-coding {
+    border-color: rgba(80, 180, 150, 0.35);
+    background: rgba(80, 180, 150, 0.06);
+}
+
+.tile-placeholder-security {
+    border-color: rgba(255, 120, 100, 0.35);
+    background: rgba(255, 120, 100, 0.06);
+}
+
+.tile-placeholder-productivity {
+    border-color: rgba(120, 200, 220, 0.35);
+    background: rgba(120, 200, 220, 0.06);
+}
+
+/* Link cards */
 .links-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -334,7 +414,7 @@ body {
     text-align: center;
 }
 
-/* Мини-сапёр */
+/* Minesweeper */
 .minesweeper-mini-block {
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -364,15 +444,19 @@ body {
 }
 
 .minesweeper-grid {
-    display: none;
-    grid-template-columns: repeat(5, 35px);
-    gap: 5px;
-    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 4px;
+    margin-top: 6px;
+    width: 100%;
+    flex: 1;
 }
 
 .mine-cell {
-    width: 35px;
-    height: 35px;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
     border: 1px solid var(--accent);
     border-radius: 5px;
     background: rgba(139, 63, 230, 0.2);
@@ -389,7 +473,31 @@ body {
     background: rgba(139, 63, 230, 0.4);
 }
 
-/* Виджеты (погода, время, Steam) */
+.mine-cell.revealed {
+    background: rgba(100, 100, 150, 0.3);
+    cursor: default;
+}
+
+.mine-cell.flagged {
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.mine-cell.mine {
+    background: rgba(200, 60, 80, 0.25);
+}
+
+.mine-status {
+    font-size: 12px;
+    color: rgba(224, 166, 255, 0.7);
+    text-align: center;
+    margin-top: -4px;
+}
+
+.minesweeper-block {
+    height: 100%;
+}
+
+/* Widgets (weather, time, Steam) */
 .widgets-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -502,7 +610,7 @@ body {
     border-color: var(--accent);
 }
 
-/* Логотип */
+/* Logo */
 .logo-container {
     display: flex;
     justify-content: center;
@@ -526,7 +634,7 @@ body {
     box-shadow: 0 0 30px rgba(157, 78, 221, 0.4);
 }
 
-/* Адаптив для планшетов */
+/* Tablet */
 @media (max-width: 1024px) {
     .main-grid {
         grid-template-columns: 1fr;
@@ -541,7 +649,7 @@ body {
     }
 }
 
-/* Адаптив для мобилы */
+/* Mobile */
 @media (max-width: 768px) {
     .container {
         padding: 15px 10px;
