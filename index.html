@@ -10,253 +10,259 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="container">
-		<div class="animated-background">
-			<div class="blob blob-1"></div>
-			<div class="blob blob-2"></div>
-			<div class="blob blob-3"></div>
-		</div>
-
-		<div class="content">
-			<div class="search-container fade-in">
-				<input type="text" id="searchInput" class="search-input" placeholder="Search with Google...">
-				<button class="search-btn" onclick="performSearch()">🔍</button>
-			</div>
-
-			<div class="main-grid">
-				<div class="left-column">
-					<div class="category-block ai-block fade-in">
-						<h3 class="category-title">🧭 Link Categorizer</h3>
-						<p class="block-description">Paste your links and I will sort them</p>
-						<textarea id="linksInput" class="links-textarea" placeholder="https://google.com&#10;https://github.com&#10;..."></textarea>
-						<button onclick="categorizeLinks()" class="categorize-btn">Update Categories</button>
-						<div id="categorizerResults" class="categorizer-results"></div>
-					</div>
-					<div class="category-block translator-block fade-in">
-						<h3 class="category-title">🌐 Quick Translator</h3>
-						<p class="block-description">Translate text directly on startpage</p>
-						<div class="translator-controls">
-							<select id="sourceLang" class="translator-select">
-								<option value="auto">Auto detect</option>
-								<option value="ru">Russian</option>
-								<option value="en">English</option>
-								<option value="uk">Ukrainian</option>
-								<option value="no">Norwegian</option>
-								<option value="de">German</option>
-								<option value="fr">French</option>
-								<option value="es">Spanish</option>
-							</select>
-							<button id="swapLangBtn" class="mini-btn translator-swap-btn" type="button">⇄</button>
-							<select id="targetLang" class="translator-select">
-								<option value="en">English</option>
-								<option value="ru">Russian</option>
-								<option value="uk">Ukrainian</option>
-								<option value="no">Norwegian</option>
-								<option value="de">German</option>
-								<option value="fr">French</option>
-								<option value="es">Spanish</option>
-							</select>
-						</div>
-						<textarea id="translatorInput" class="translator-textarea" placeholder="Type text to translate..."></textarea>
-						<button id="translateBtn" class="categorize-btn" type="button">Translate</button>
-						<textarea id="translatorOutput" class="translator-textarea translator-output" placeholder="Translation appears here..." readonly></textarea>
-						<div id="translatorStatus" class="translator-status">Ready</div>
-					</div>
+	<div class="viewport-fit">
+		<div id="pageScale" class="page-scale">
+			<div class="container">
+				<div class="animated-background">
+					<div class="blob blob-1"></div>
+					<div class="blob blob-2"></div>
+					<div class="blob blob-3"></div>
 				</div>
 
-				<div class="right-column">
-					<div class="right-top-row">
-						<div class="category-block entertainment-block fade-in">
-							<h3 class="category-title">🎮 Entertainment</h3>
-							<div class="links-grid">
-								<a href="https://youtube.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube">
-									<span class="label">YouTube</span>
-								</a>
-								<a href="https://twitch.tv" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=twitch.tv&sz=64" alt="Twitch">
-									<span class="label">Twitch</span>
-								</a>
-								<a href="https://tiktok.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="TikTok">
-									<span class="label">TikTok</span>
-								</a>
-								<a href="https://spotify.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
-									<span class="label">Spotify</span>
-								</a>
-								<a href="https://www.netflix.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=netflix.com&sz=64" alt="Netflix">
-									<span class="label">Netflix</span>
-								</a>
-								<a href="https://www.imdb.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=imdb.com&sz=64" alt="IMDb">
-									<span class="label">IMDb</span>
-								</a>
+				<div class="content">
+					<div class="search-container fade-in">
+						<div class="search-box">
+							<input type="text" id="searchInput" class="search-input" placeholder="Search with Google..." autocomplete="off" spellcheck="false">
+							<div id="searchSuggestions" class="search-suggestions" hidden></div>
+						</div>
+						<button class="search-btn" onclick="performSearch()">🔍</button>
+					</div>
+
+					<div class="main-grid">
+						<div class="left-column">
+							<div class="category-block ai-block fade-in">
+								<h3 class="category-title">🧭 Link Categorizer</h3>
+								<p class="block-description">Paste your links and I will sort them</p>
+								<textarea id="linksInput" class="links-textarea" placeholder="https://google.com&#10;https://github.com&#10;..."></textarea>
+								<button onclick="categorizeLinks()" class="categorize-btn">Update Categories</button>
+								<div id="categorizerResults" class="categorizer-results"></div>
+							</div>
+							<div class="category-block translator-block fade-in">
+								<h3 class="category-title">🌐 Quick Translator</h3>
+								<p class="block-description">Translate text directly on startpage</p>
+								<div class="translator-controls">
+									<select id="sourceLang" class="translator-select">
+										<option value="auto">Auto detect</option>
+										<option value="ru">Russian</option>
+										<option value="en">English</option>
+										<option value="uk">Ukrainian</option>
+										<option value="no">Norwegian</option>
+										<option value="de">German</option>
+										<option value="fr">French</option>
+										<option value="es">Spanish</option>
+									</select>
+									<button id="swapLangBtn" class="mini-btn translator-swap-btn" type="button">⇄</button>
+									<select id="targetLang" class="translator-select">
+										<option value="en">English</option>
+										<option value="ru">Russian</option>
+										<option value="uk">Ukrainian</option>
+										<option value="no">Norwegian</option>
+										<option value="de">German</option>
+										<option value="fr">French</option>
+										<option value="es">Spanish</option>
+									</select>
+								</div>
+								<textarea id="translatorInput" class="translator-textarea" placeholder="Type text to translate..."></textarea>
+								<button id="translateBtn" class="categorize-btn" type="button">Translate</button>
+								<textarea id="translatorOutput" class="translator-textarea translator-output" placeholder="Translation appears here..." readonly></textarea>
+								<div id="translatorStatus" class="translator-status">Ready</div>
 							</div>
 						</div>
 
-						<div class="category-block coding-block fade-in">
-							<h3 class="category-title">💻 Coding</h3>
-							<div class="links-grid">
-								<a href="https://github.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt="GitHub">
-									<span class="label">GitHub</span>
-								</a>
-								<a href="https://gitlab.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=gitlab.com&sz=64" alt="GitLab">
-									<span class="label">GitLab</span>
-								</a>
-								<a href="https://codepen.io" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=codepen.io&sz=64" alt="CodePen">
-									<span class="label">CodePen</span>
-								</a>
-								<a href="https://quickref.me" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=quickref.me&sz=64" alt="QuickRef">
-									<span class="label">QuickRef.me</span>
-								</a>
-								<a href="https://developer.mozilla.org" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=developer.mozilla.org&sz=64" alt="MDN">
-									<span class="label">MDN</span>
-								</a>
-								<a href="https://stackoverflow.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64" alt="Stack Overflow">
-									<span class="label">Stack Overflow</span>
-								</a>
+						<div class="right-column">
+							<div class="right-top-row">
+								<div class="category-block entertainment-block fade-in">
+									<h3 class="category-title">🎮 Entertainment</h3>
+									<div class="links-grid">
+										<a href="https://youtube.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube">
+											<span class="label">YouTube</span>
+										</a>
+										<a href="https://twitch.tv" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=twitch.tv&sz=64" alt="Twitch">
+											<span class="label">Twitch</span>
+										</a>
+										<a href="https://tiktok.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="TikTok">
+											<span class="label">TikTok</span>
+										</a>
+										<a href="https://spotify.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
+											<span class="label">Spotify</span>
+										</a>
+										<a href="https://www.netflix.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=netflix.com&sz=64" alt="Netflix">
+											<span class="label">Netflix</span>
+										</a>
+										<a href="https://www.imdb.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=imdb.com&sz=64" alt="IMDb">
+											<span class="label">IMDb</span>
+										</a>
+									</div>
+								</div>
+
+								<div class="category-block coding-block fade-in">
+									<h3 class="category-title">💻 Coding</h3>
+									<div class="links-grid">
+										<a href="https://github.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt="GitHub">
+											<span class="label">GitHub</span>
+										</a>
+										<a href="https://gitlab.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=gitlab.com&sz=64" alt="GitLab">
+											<span class="label">GitLab</span>
+										</a>
+										<a href="https://codepen.io" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=codepen.io&sz=64" alt="CodePen">
+											<span class="label">CodePen</span>
+										</a>
+										<a href="https://quickref.me" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=quickref.me&sz=64" alt="QuickRef">
+											<span class="label">QuickRef.me</span>
+										</a>
+										<a href="https://developer.mozilla.org" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=developer.mozilla.org&sz=64" alt="MDN">
+											<span class="label">MDN</span>
+										</a>
+										<a href="https://stackoverflow.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64" alt="Stack Overflow">
+											<span class="label">Stack Overflow</span>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="right-bottom-row">
+								<div class="category-block security-block fade-in">
+									<h3 class="category-title">🛡️ Security</h3>
+									<div class="links-grid">
+										<a href="https://tryhackme.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=tryhackme.com&sz=64" alt="TryHackMe">
+											<span class="label">TryHackMe</span>
+										</a>
+										<a href="https://hacktriks.xyz" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=hacktriks.xyz&sz=64" alt="HackTricks">
+											<span class="label">HackTricks</span>
+										</a>
+										<a href="https://www.hackthebox.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=hackthebox.com&sz=64" alt="Hack The Box">
+											<span class="label">Hack The Box</span>
+										</a>
+										<a href="https://owasp.org" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=owasp.org&sz=64" alt="OWASP">
+											<span class="label">OWASP</span>
+										</a>
+									</div>
+									<div class="secret-zone">
+										<button id="toggleSnakeBtn" class="secret-btn" type="button">CLASSIFIED</button>
+									</div>
+								</div>
+
+								<div class="category-block productivity-block fade-in">
+									<h3 class="category-title">📊 Productivity</h3>
+									<div class="links-grid">
+										<a href="https://gmail.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=gmail.com&sz=64" alt="Gmail">
+											<span class="label">Gmail</span>
+										</a>
+										<a href="https://mail.proton.me" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=proton.me&sz=64" alt="Proton Mail">
+											<span class="label">Proton Mail</span>
+										</a>
+										<a href="https://notion.so" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="Notion">
+											<span class="label">Notion</span>
+										</a>
+										<a href="https://drive.google.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=64" alt="Google Drive">
+											<span class="label">Drive</span>
+										</a>
+										<a href="https://slack.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="Slack">
+											<span class="label">Slack</span>
+										</a>
+										<a href="https://chatgpt.com" class="link-card">
+											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="ChatGPT">
+											<span class="label">ChatGPT</span>
+										</a>
+									</div>
+								</div>
+
+								<div id="minesweeper" class="category-block minesweeper-block fade-in">
+									<h3 class="category-title">💣 Minesweeper</h3>
+									<div id="mineStatus" class="mine-status">Click a cell to start</div>
+									<button onclick="startMinesweeper()" class="mini-btn">New Game</button>
+									<div id="mineGrid" class="minesweeper-grid"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="right-bottom-row">
-						<div class="category-block security-block fade-in">
-							<h3 class="category-title">🛡️ Security</h3>
-							<div class="links-grid">
-								<a href="https://tryhackme.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=tryhackme.com&sz=64" alt="TryHackMe">
-									<span class="label">TryHackMe</span>
-								</a>
-								<a href="https://hacktriks.xyz" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=hacktriks.xyz&sz=64" alt="HackTricks">
-									<span class="label">HackTricks</span>
-								</a>
-								<a href="https://www.hackthebox.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=hackthebox.com&sz=64" alt="Hack The Box">
-									<span class="label">Hack The Box</span>
-								</a>
-								<a href="https://owasp.org" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=owasp.org&sz=64" alt="OWASP">
-									<span class="label">OWASP</span>
-								</a>
-							</div>
-							<div class="secret-zone">
-								<button id="toggleSnakeBtn" class="secret-btn" type="button">CLASSIFIED</button>
+		            <div class="enjoyer-text fade-in">Made by the strongest PUPAMUPA enjoyer</div>
+					<div class="widgets-row fade-in">
+						<div class="widget weather-widget">
+							<h4 class="widget-title">Weather</h4>
+							<div class="widget-core">
+								<div id="weather">
+									<div class="weather-temp">--°C</div>
+									<div class="weather-desc">Oslo</div>
+								</div>
+								<div id="weatherMeta" class="widget-subline">Tap to refresh</div>
+								<button onclick="loadWeather()" class="mini-btn">🌤️</button>
 							</div>
 						</div>
 
-						<div class="category-block productivity-block fade-in">
-							<h3 class="category-title">📊 Productivity</h3>
-							<div class="links-grid">
-								<a href="https://gmail.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=gmail.com&sz=64" alt="Gmail">
-									<span class="label">Gmail</span>
-								</a>
-								<a href="https://mail.proton.me" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=proton.me&sz=64" alt="Proton Mail">
-									<span class="label">Proton Mail</span>
-								</a>
-								<a href="https://notion.so" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="Notion">
-									<span class="label">Notion</span>
-								</a>
-								<a href="https://drive.google.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=64" alt="Google Drive">
-									<span class="label">Drive</span>
-								</a>
-								<a href="https://slack.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="Slack">
-									<span class="label">Slack</span>
-								</a>
-								<a href="https://chatgpt.com" class="link-card">
-									<img class="site-icon" src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="ChatGPT">
-									<span class="label">ChatGPT</span>
-								</a>
+						<div class="widget time-widget">
+							<h4 class="widget-title">Local Time</h4>
+							<div class="widget-core">
+								<div id="time" class="time-display">00:00</div>
+								<div id="timeMeta" class="widget-subline">--</div>
+								<button class="mini-btn">⏰</button>
 							</div>
 						</div>
 
-						<div id="minesweeper" class="category-block minesweeper-block fade-in">
-							<h3 class="category-title">💣 Minesweeper</h3>
-							<div id="mineStatus" class="mine-status">Click a cell to start</div>
-							<button onclick="startMinesweeper()" class="mini-btn">New Game</button>
-							<div id="mineGrid" class="minesweeper-grid"></div>
+						<div class="widget fx-widget">
+							<h4 class="widget-title">UAH ↔ NOK Converter</h4>
+							<div class="widget-core">
+								<input id="fxAmount" class="search-input fx-input" type="number" min="0" step="0.01" value="100" placeholder="Amount">
+								<div class="translator-controls">
+									<select id="fxFrom" class="translator-select">
+										<option value="UAH">UAH</option>
+										<option value="NOK">NOK</option>
+									</select>
+									<button id="fxSwapBtn" class="mini-btn translator-swap-btn" type="button">⇄</button>
+									<select id="fxTo" class="translator-select">
+										<option value="NOK">NOK</option>
+										<option value="UAH">UAH</option>
+									</select>
+								</div>
+								<div id="fxResult" class="time-display">--.--</div>
+								<div id="fxMeta" class="weather-desc">Updating rate...</div>
+								<button onclick="loadFxRates()" class="mini-btn">💱</button>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-            <div class="enjoyer-text fade-in">Made by the strongest PUPAMUPA enjoyer</div>
-			<div class="widgets-row fade-in">
-				<div class="widget weather-widget">
-					<h4 class="widget-title">Weather</h4>
-					<div class="widget-core">
-						<div id="weather">
-							<div class="weather-temp">--°C</div>
-							<div class="weather-desc">Oslo</div>
-						</div>
-						<div id="weatherMeta" class="widget-subline">Tap to refresh</div>
-						<button onclick="loadWeather()" class="mini-btn">🌤️</button>
-					</div>
+				<div class="logo-container fade-in">
+					<img src="image.png" alt="Pupamupa" class="logo" onerror="this.style.display='none'">
 				</div>
-
-				<div class="widget time-widget">
-					<h4 class="widget-title">Local Time</h4>
-					<div class="widget-core">
-						<div id="time" class="time-display">00:00</div>
-						<div id="timeMeta" class="widget-subline">--</div>
-						<button class="mini-btn">⏰</button>
-					</div>
-				</div>
-
-				<div class="widget fx-widget">
-					<h4 class="widget-title">UAH ↔ NOK Converter</h4>
-					<div class="widget-core">
-						<input id="fxAmount" class="search-input fx-input" type="number" min="0" step="0.01" value="100" placeholder="Amount">
-						<div class="translator-controls">
-							<select id="fxFrom" class="translator-select">
-								<option value="UAH">UAH</option>
-								<option value="NOK">NOK</option>
-							</select>
-							<button id="fxSwapBtn" class="mini-btn translator-swap-btn" type="button">⇄</button>
-							<select id="fxTo" class="translator-select">
-								<option value="NOK">NOK</option>
-								<option value="UAH">UAH</option>
-							</select>
-						</div>
-						<div id="fxResult" class="time-display">--.--</div>
-						<div id="fxMeta" class="weather-desc">Updating rate...</div>
-						<button onclick="loadFxRates()" class="mini-btn">💱</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div id="snakeModal" class="snake-modal" hidden>
-			<div id="snakeBackdrop" class="snake-modal-backdrop"></div>
-			<div class="snake-modal-card" role="dialog" aria-modal="true" aria-labelledby="snakeModalTitle">
-				<div class="snake-modal-top">
-					<h4 id="snakeModalTitle">Classified: Snake Protocol</h4>
-					<button id="snakeCloseBtn" class="snake-close-btn" type="button" aria-label="Close snake game">×</button>
-				</div>
-				<div class="snake-header">
-					<span id="snakeScore">Score: 0</span>
-					<span id="snakeStatus">Use arrow keys</span>
-				</div>
-				<canvas id="snakeCanvas" width="256" height="160" aria-label="Snake game area"></canvas>
-				<button id="snakeRestartBtn" class="mini-btn" type="button">Restart Snake</button>
 			</div>
 		</div>
+	</div>
 
-		<div class="logo-container fade-in">
-			<img src="image.png" alt="Pupamupa" class="logo" onerror="this.style.display='none'">
+	<div id="snakeModal" class="snake-modal" hidden>
+		<div id="snakeBackdrop" class="snake-modal-backdrop"></div>
+		<div class="snake-modal-card" role="dialog" aria-modal="true" aria-labelledby="snakeModalTitle">
+			<div class="snake-modal-top">
+				<h4 id="snakeModalTitle">Classified: Snake Protocol</h4>
+				<button id="snakeCloseBtn" class="snake-close-btn" type="button" aria-label="Close snake game">×</button>
+			</div>
+			<div class="snake-header">
+				<span id="snakeScore">Score: 0</span>
+				<span id="snakeStatus">Use arrow keys</span>
+			</div>
+			<canvas id="snakeCanvas" width="256" height="160" aria-label="Snake game area"></canvas>
+			<button id="snakeRestartBtn" class="mini-btn" type="button">Restart Snake</button>
 		</div>
 	</div>
 

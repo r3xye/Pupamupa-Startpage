@@ -1,14 +1,258 @@
 // Search
-function performSearch() {
+const SEARCH_HISTORY_KEY = 'pupamupa_search_history';
+const SEARCH_HISTORY_LIMIT = 8;
+const SEARCH_PRESET_SUGGESTIONS = [
+    'github',
+    'youtube',
+    'chatgpt',
+    'weather oslo',
+    'translate russian to english',
+    'javascript array methods',
+    'css glassmorphism',
+    'mdn fetch api',
+    'tryhackme',
+    'hackthebox',
+    'spotify',
+    'uah to nok'
+];
+
+let searchSuggestionItems = [];
+let activeSearchSuggestionIndex = -1;
+let fitViewportTimer = null;
+let pageResizeObserver = null;
+
+function performSearch(query = null) {
     const searchInput = document.getElementById('searchInput');
-    if (searchInput.value.trim()) {
-        window.open(`https://google.com/search?q=${encodeURIComponent(searchInput.value)}`, '_blank');
+    if (!searchInput) return;
+
+    const value = typeof query === 'string' ? query.trim() : searchInput.value.trim();
+    if (!value) return;
+
+    searchInput.value = value;
+    storeSearchQuery(value);
+    hideSearchSuggestions();
+    window.open(`https://google.com/search?q=${encodeURIComponent(value)}`, '_blank');
+}
+
+function loadSearchHistory() {
+    const saved = localStorage.getItem(SEARCH_HISTORY_KEY);
+    if (!saved) return [];
+    try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed.filter(item => typeof item === 'string') : [];
+    } catch {
+        return [];
     }
 }
 
-document.getElementById('searchInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') performSearch();
-});
+function storeSearchQuery(query) {
+    const normalized = query.trim();
+    if (!normalized) return;
+
+    const history = loadSearchHistory().filter(item => item.toLowerCase() !== normalized.toLowerCase());
+    history.unshift(normalized);
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history.slice(0, SEARCH_HISTORY_LIMIT)));
+}
+
+function getSearchSuggestions(query) {
+    const normalized = query.trim().toLowerCase();
+    const history = loadSearchHistory();
+    const unique = new Set();
+    const items = [];
+
+    const appendSuggestions = (values, type) => {
+        values.forEach(value => {
+            if (typeof value !== 'string') return;
+            const cleaned = value.trim();
+            if (!cleaned) return;
+            const lower = cleaned.toLowerCase();
+            if (normalized && !lower.includes(normalized)) return;
+            if (unique.has(lower)) return;
+            unique.add(lower);
+            items.push({ value: cleaned, type });
+        });
+    };
+
+    appendSuggestions(history, 'recent');
+    appendSuggestions(SEARCH_PRESET_SUGGESTIONS, 'quick');
+
+    if (!normalized) {
+        return items.slice(0, 6);
+    }
+
+    const startsWith = [];
+    const contains = [];
+    items.forEach(item => {
+        if (item.value.toLowerCase().startsWith(normalized)) {
+            startsWith.push(item);
+        } else {
+            contains.push(item);
+        }
+    });
+
+    return startsWith.concat(contains).slice(0, 8);
+}
+
+function hideSearchSuggestions() {
+    const container = document.getElementById('searchSuggestions');
+    if (!container) return;
+    container.hidden = true;
+    container.innerHTML = '';
+    searchSuggestionItems = [];
+    activeSearchSuggestionIndex = -1;
+}
+
+function scheduleViewportFit() {
+    if (fitViewportTimer) clearTimeout(fitViewportTimer);
+    fitViewportTimer = setTimeout(() => {
+        fitPageToViewport();
+    }, 40);
+}
+
+function fitPageToViewport() {
+    const frame = document.querySelector('.viewport-fit');
+    const pageScale = document.getElementById('pageScale');
+    if (!frame || !pageScale) return;
+
+    pageScale.style.transform = 'scale(1)';
+
+    const naturalWidth = pageScale.scrollWidth;
+    const naturalHeight = pageScale.scrollHeight;
+    if (!naturalWidth || !naturalHeight) return;
+
+    const widthScale = frame.clientWidth / naturalWidth;
+    const heightScale = frame.clientHeight / naturalHeight;
+    const scale = Math.min(1, widthScale, heightScale);
+
+    pageScale.style.transform = `scale(${scale})`;
+}
+
+function initViewportFit() {
+    fitPageToViewport();
+    window.addEventListener('resize', scheduleViewportFit);
+
+    const pageScale = document.getElementById('pageScale');
+    if (!pageScale || typeof ResizeObserver === 'undefined') return;
+
+    pageResizeObserver = new ResizeObserver(() => {
+        scheduleViewportFit();
+    });
+    pageResizeObserver.observe(pageScale);
+}
+
+function applyActiveSearchSuggestion() {
+    const container = document.getElementById('searchSuggestions');
+    if (!container) return;
+
+    const buttons = container.querySelectorAll('.search-suggestion');
+    buttons.forEach((button, index) => {
+        button.classList.toggle('active', index === activeSearchSuggestionIndex);
+    });
+}
+
+function selectSearchSuggestion(index) {
+    if (index < 0 || index >= searchSuggestionItems.length) return;
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    searchInput.value = searchSuggestionItems[index].value;
+    activeSearchSuggestionIndex = index;
+    applyActiveSearchSuggestion();
+}
+
+function renderSearchSuggestions(query) {
+    const container = document.getElementById('searchSuggestions');
+    if (!container) return;
+
+    searchSuggestionItems = getSearchSuggestions(query);
+    activeSearchSuggestionIndex = -1;
+
+    if (searchSuggestionItems.length === 0) {
+        hideSearchSuggestions();
+        return;
+    }
+
+    container.innerHTML = '';
+    searchSuggestionItems.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'search-suggestion';
+        button.innerHTML = `
+            <span class="search-suggestion-text">${item.value}</span>
+            <span class="search-suggestion-meta">${item.type}</span>
+        `;
+        button.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+        button.addEventListener('click', () => {
+            performSearch(item.value);
+        });
+        button.addEventListener('mouseenter', () => {
+            activeSearchSuggestionIndex = index;
+            applyActiveSearchSuggestion();
+        });
+        container.appendChild(button);
+    });
+
+    container.hidden = false;
+}
+
+function initSearchAutocomplete() {
+    const searchInput = document.getElementById('searchInput');
+    const suggestions = document.getElementById('searchSuggestions');
+    if (!searchInput || !suggestions) return;
+
+    searchInput.addEventListener('focus', () => {
+        renderSearchSuggestions(searchInput.value);
+    });
+
+    searchInput.addEventListener('input', () => {
+        renderSearchSuggestions(searchInput.value);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+            if (searchSuggestionItems.length === 0) return;
+            e.preventDefault();
+            activeSearchSuggestionIndex = (activeSearchSuggestionIndex + 1) % searchSuggestionItems.length;
+            selectSearchSuggestion(activeSearchSuggestionIndex);
+            return;
+        }
+
+        if (e.key === 'ArrowUp') {
+            if (searchSuggestionItems.length === 0) return;
+            e.preventDefault();
+            activeSearchSuggestionIndex = activeSearchSuggestionIndex <= 0
+                ? searchSuggestionItems.length - 1
+                : activeSearchSuggestionIndex - 1;
+            selectSearchSuggestion(activeSearchSuggestionIndex);
+            return;
+        }
+
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeSearchSuggestionIndex >= 0) {
+                performSearch(searchSuggestionItems[activeSearchSuggestionIndex].value);
+            } else {
+                performSearch();
+            }
+            return;
+        }
+
+        if (e.key === 'Escape') {
+            hideSearchSuggestions();
+        }
+    });
+
+    searchInput.addEventListener('blur', () => {
+        setTimeout(hideSearchSuggestions, 120);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-box')) {
+            hideSearchSuggestions();
+        }
+    });
+}
 
 // Weather (MET Norway API)
 async function loadWeather() {
@@ -43,6 +287,7 @@ async function loadWeather() {
                 const now = new Date();
                 weatherMeta.textContent = `Updated ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
             }
+            scheduleViewportFit();
         } else {
             throw new Error('No data');
         }
@@ -52,6 +297,7 @@ async function loadWeather() {
         const weatherMeta = document.getElementById('weatherMeta');
         if (weatherMeta) weatherMeta.textContent = 'Service unavailable';
         console.warn('Weather error', e);
+        scheduleViewportFit();
     }
 }
 
@@ -147,9 +393,11 @@ async function loadFxRates() {
         if (!data || data.result !== 'success' || !data.rates) throw new Error('Bad rate payload');
         fxRates = data.rates;
         convertFx();
+        scheduleViewportFit();
     } catch (e) {
         meta.textContent = 'Rate unavailable';
         console.warn('FX rate error', e);
+        scheduleViewportFit();
     }
 }
 
@@ -750,6 +998,7 @@ function categorizeLinks() {
 
     if (categories.size === 0) {
         resultsEl.innerHTML = '<div class="category-group"><h4>Nothing to sort</h4></div>';
+        scheduleViewportFit();
         return;
     }
 
@@ -758,6 +1007,7 @@ function categorizeLinks() {
         if (!items || items.length === 0) return;
         resultsEl.appendChild(buildCategoryGroup(def.name, items));
     });
+    scheduleViewportFit();
 }
 
 function scheduleCategorize() {
@@ -862,6 +1112,7 @@ window.addEventListener('load', () => {
     loadWeather();
     loadFxRates();
     startMinesweeper();
+    initSearchAutocomplete();
     restoreLinksInput();
     categorizeLinks();
 
@@ -897,4 +1148,5 @@ window.addEventListener('load', () => {
     if (fxSwapBtn) fxSwapBtn.addEventListener('click', swapFxPair);
 
     initSnakeControls();
+    initViewportFit();
 });
