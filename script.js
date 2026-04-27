@@ -19,7 +19,6 @@ const SEARCH_PRESET_SUGGESTIONS = [
 let searchSuggestionItems = [];
 let activeSearchSuggestionIndex = -1;
 let fitViewportTimer = null;
-let pageResizeObserver = null;
 
 function performSearch(query = null) {
     const searchInput = document.getElementById('searchInput');
@@ -110,34 +109,21 @@ function scheduleViewportFit() {
 }
 
 function fitPageToViewport() {
-    const frame = document.querySelector('.viewport-fit');
-    const pageScale = document.getElementById('pageScale');
-    if (!frame || !pageScale) return;
+    const root = document.documentElement;
+    if (!root) return;
 
-    pageScale.style.transform = 'scale(1)';
+    const viewportWidth = window.innerWidth || root.clientWidth || 0;
+    const viewportHeight = window.innerHeight || root.clientHeight || 0;
+    if (!viewportWidth || !viewportHeight) return;
 
-    const naturalWidth = pageScale.scrollWidth;
-    const naturalHeight = pageScale.scrollHeight;
-    if (!naturalWidth || !naturalHeight) return;
-
-    const widthScale = frame.clientWidth / naturalWidth;
-    const heightScale = frame.clientHeight / naturalHeight;
-    const scale = Math.min(1, widthScale, heightScale);
-
-    pageScale.style.transform = `scale(${scale})`;
+    root.classList.toggle('layout-portrait', viewportHeight > viewportWidth);
+    root.classList.toggle('layout-narrow', viewportWidth <= 1180);
+    root.classList.toggle('layout-short', viewportHeight <= 940);
 }
 
 function initViewportFit() {
     fitPageToViewport();
     window.addEventListener('resize', scheduleViewportFit);
-
-    const pageScale = document.getElementById('pageScale');
-    if (!pageScale || typeof ResizeObserver === 'undefined') return;
-
-    pageResizeObserver = new ResizeObserver(() => {
-        scheduleViewportFit();
-    });
-    pageResizeObserver.observe(pageScale);
 }
 
 function applyActiveSearchSuggestion() {
