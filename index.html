@@ -1,271 +1,374 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Pupamupa 4 firefox</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;600&family=Fira+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* --- GRUVBOX THEME & RESET --- */
+        :root {
+            --bg: #282828;
+            --fg: #ebdbb2;
+            --gray: #928374;
+            --red: #cc241d;
+            --green: #98971a;
+            --yellow: #d79921;
+            --blue: #458588;
+            --purple: #b16286;
+            --aqua: #689d6a;
+            --orange: #d65d0e;
+            
+            --bg0_h: #1d2021;
+            --bg1: #3c3836;
+            --bg2: #504945;
+            --bg3: #665c54;
+            
+            --fg0: #fbf1c7;
+            --fg1: #ebdbb2;
+            --fg4: #928374;
+
+            --font-main: 'JetBrains Mono', 'Fira Code', monospace;
+            
+            /* Brighter colors for crypto changes to pop against dark bg */
+            --bright-green: #b8bb26;
+            --bright-red: #fb4934;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- LAYOUT GRID --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 1rem;
+            width: 90%;
+            max-width: 1600px;
+            height: 85vh;
+            padding: 1rem;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background-color: var(--bg1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--fg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, background-color 0.2s;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            background-color: var(--bg2);
+            border-color: var(--gray);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--yellow);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-sub {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Specific Sizes for Bento Look */
+        .col-span-2 { grid-column: span 2; }
+        .row-span-2 { grid-row: span 2; }
+
+        /* Crypto Widget Styles */
+        .crypto-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: auto;
+        }
+        .crypto-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        .crypto-price { font-weight: bold; }
+        .crypto-change { font-size: 0.8rem; }
+        
+        .change-up { color: var(--bright-green); font-weight: bold; }
+        .change-down { color: var(--bright-red); font-weight: bold; }
+
+        /* --- VIM COMMAND BAR --- */
+        #cmd-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg0_h);
+            color: var(--fg);
+            padding: 1rem 2rem;
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            transform: translateY(100%);
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1000;
+            border-top: 2px solid var(--gray);
+        }
+
+        #cmd-bar.active {
+            transform: translateY(0);
+        }
+
+        #cmd-prompt {
+            color: var(--yellow);
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: var(--fg);
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        /* Icons */
+        svg { width: 24px; height: 24px; fill: currentColor; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+                height: auto;
+                overflow-y: auto;
+            }
+            body { overflow: auto; height: auto; padding: 2rem 0; }
+            .col-span-2 { grid-column: span 1; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-	<div class="viewport-fit">
-		<div id="pageScale" class="page-scale">
-			<div class="container">
-				<div class="animated-background">
-					<div class="blob blob-1"></div>
-					<div class="blob blob-2"></div>
-					<div class="blob blob-3"></div>
-				</div>
 
-				<div class="content">
-					<div class="search-container fade-in">
-						<div class="search-box">
-							<input type="text" id="searchInput" class="search-input" placeholder="Search with Google..." autocomplete="off" spellcheck="false">
-							<div id="searchSuggestions" class="search-suggestions" hidden></div>
-						</div>
-						<button class="search-btn" onclick="performSearch()">🔍</button>
-					</div>
+    <div class="grid-container">
+        <!-- Search / Start Block -->
+        <div class="card col-span-2 row-span-2" style="justify-content: center; align-items: center; text-align: center;">
+            <div style="font-size: 4rem; color: var(--orange); margin-bottom: 1rem;">::</div>
+            <h1 style="font-size: 2rem; color: var(--fg0);">Welcome</h1>
+            <p style="color: var(--gray); margin-top: 1rem;">Press <span style="color: var(--yellow); border: 1px solid var(--gray); padding: 2px 6px; border-radius: 4px;">:</span> to search</p>
+            <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--fg4);">
+                :g Google | :d DuckDuckGo | :y YouTube | :a Arch Wiki
+            </div>
+        </div>
 
-					<div class="main-grid">
-						<div class="left-column">
-							<div class="category-block ai-block fade-in">
-								<h3 class="category-title">🧭 Link Categorizer</h3>
-								<p class="block-description">Paste your links and I will sort them</p>
-								<textarea id="linksInput" class="links-textarea" placeholder="https://google.com&#10;https://github.com&#10;..."></textarea>
-								<button onclick="categorizeLinks()" class="categorize-btn">Update Categories</button>
-								<div id="categorizerResults" class="categorizer-results"></div>
-							</div>
-							<div class="category-block translator-block fade-in">
-								<h3 class="category-title">🌐 Quick Translator</h3>
-								<p class="block-description">Translate text directly on startpage</p>
-								<div class="translator-controls">
-									<select id="sourceLang" class="translator-select">
-										<option value="auto">Auto detect</option>
-										<option value="ru">Russian</option>
-										<option value="en">English</option>
-										<option value="uk">Ukrainian</option>
-										<option value="no">Norwegian</option>
-										<option value="de">German</option>
-										<option value="fr">French</option>
-										<option value="es">Spanish</option>
-									</select>
-									<button id="swapLangBtn" class="mini-btn translator-swap-btn" type="button">⇄</button>
-									<select id="targetLang" class="translator-select">
-										<option value="en">English</option>
-										<option value="ru">Russian</option>
-										<option value="uk">Ukrainian</option>
-										<option value="no">Norwegian</option>
-										<option value="de">German</option>
-										<option value="fr">French</option>
-										<option value="es">Spanish</option>
-									</select>
-								</div>
-								<textarea id="translatorInput" class="translator-textarea" placeholder="Type text to translate..."></textarea>
-								<button id="translateBtn" class="categorize-btn" type="button">Translate</button>
-								<textarea id="translatorOutput" class="translator-textarea translator-output" placeholder="Translation appears here..." readonly></textarea>
-								<div id="translatorStatus" class="translator-status">Ready</div>
-							</div>
-						</div>
+        <!-- YouTube -->
+        <a href="https://youtube.com" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                YouTube
+            </div>
+            <div class="card-sub">Video Platform</div>
+        </a>
 
-						<div class="right-column">
-							<div class="right-top-row">
-								<div class="category-block entertainment-block fade-in">
-									<h3 class="category-title">🎮 Entertainment</h3>
-									<div class="links-grid">
-										<a href="https://youtube.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube">
-											<span class="label">YouTube</span>
-										</a>
-										<a href="https://twitch.tv" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=twitch.tv&sz=64" alt="Twitch">
-											<span class="label">Twitch</span>
-										</a>
-										<a href="https://tiktok.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="TikTok">
-											<span class="label">TikTok</span>
-										</a>
-										<a href="https://spotify.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
-											<span class="label">Spotify</span>
-										</a>
-										<a href="https://www.netflix.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=netflix.com&sz=64" alt="Netflix">
-											<span class="label">Netflix</span>
-										</a>
-										<a href="https://www.imdb.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=imdb.com&sz=64" alt="IMDb">
-											<span class="label">IMDb</span>
-										</a>
-									</div>
-								</div>
+        <!-- GitHub -->
+        <a href="https://github.com" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub
+            </div>
+            <div class="card-sub">Code Hosting</div>
+        </a>
 
-								<div class="category-block coding-block fade-in">
-									<h3 class="category-title">💻 Coding</h3>
-									<div class="links-grid">
-										<a href="https://github.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt="GitHub">
-											<span class="label">GitHub</span>
-										</a>
-										<a href="https://gitlab.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=gitlab.com&sz=64" alt="GitLab">
-											<span class="label">GitLab</span>
-										</a>
-										<a href="https://codepen.io" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=codepen.io&sz=64" alt="CodePen">
-											<span class="label">CodePen</span>
-										</a>
-										<a href="https://quickref.me" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=quickref.me&sz=64" alt="QuickRef">
-											<span class="label">QuickRef.me</span>
-										</a>
-										<a href="https://developer.mozilla.org" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=developer.mozilla.org&sz=64" alt="MDN">
-											<span class="label">MDN</span>
-										</a>
-										<a href="https://stackoverflow.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64" alt="Stack Overflow">
-											<span class="label">Stack Overflow</span>
-										</a>
-									</div>
-								</div>
-							</div>
+        <!-- GitLab -->
+        <a href="https://gitlab.com" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M22.65 14.39L19.22 3.88a.5.5 0 0 0-.95 0l-2.39 7.34H9.12L6.73 3.88a.5.5 0 0 0-.95 0L2.35 14.39a.5.5 0 0 0 .18.55l9.22 6.7a.5.5 0 0 0 .58 0l9.22-6.7a.5.5 0 0 0 .18-.55zM12 20.88L3.5 14.66 5.5 8.5h13l2 6.16-8.5 6.22z"/></svg>
+                GitLab
+            </div>
+            <div class="card-sub">DevOps Platform</div>
+        </a>
 
-							<div class="right-bottom-row">
-								<div class="category-block security-block fade-in">
-									<h3 class="category-title">🛡️ Security</h3>
-									<div class="links-grid">
-										<a href="https://tryhackme.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=tryhackme.com&sz=64" alt="TryHackMe">
-											<span class="label">TryHackMe</span>
-										</a>
-										<a href="https://hacktriks.xyz" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=hacktriks.xyz&sz=64" alt="HackTricks">
-											<span class="label">HackTricks</span>
-										</a>
-										<a href="https://www.hackthebox.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=hackthebox.com&sz=64" alt="Hack The Box">
-											<span class="label">Hack The Box</span>
-										</a>
-										<a href="https://owasp.org" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=owasp.org&sz=64" alt="OWASP">
-											<span class="label">OWASP</span>
-										</a>
-									</div>
-									<div class="secret-zone">
-										<button id="toggleSnakeBtn" class="secret-btn" type="button">CLASSIFIED</button>
-									</div>
-								</div>
+        <!-- Spotify -->
+        <a href="https://open.spotify.com" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.48 1.44.54.3.72 1.02.42 1.56-.299.421-1.02.599-1.56.299z"/></svg>
+                Spotify
+            </div>
+            <div class="card-sub">Music Streaming</div>
+        </a>
 
-								<div class="category-block productivity-block fade-in">
-									<h3 class="category-title">📊 Productivity</h3>
-									<div class="links-grid">
-										<a href="https://gmail.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=gmail.com&sz=64" alt="Gmail">
-											<span class="label">Gmail</span>
-										</a>
-										<a href="https://mail.proton.me" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=proton.me&sz=64" alt="Proton Mail">
-											<span class="label">Proton Mail</span>
-										</a>
-										<a href="https://notion.so" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="Notion">
-											<span class="label">Notion</span>
-										</a>
-										<a href="https://drive.google.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=64" alt="Google Drive">
-											<span class="label">Drive</span>
-										</a>
-										<a href="https://slack.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="Slack">
-											<span class="label">Slack</span>
-										</a>
-										<a href="https://chatgpt.com" class="link-card">
-											<img class="site-icon" src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="ChatGPT">
-											<span class="label">ChatGPT</span>
-										</a>
-									</div>
-								</div>
+        <!-- Arch Wiki -->
+        <a href="https://wiki.archlinux.org" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M12 0L2.4 5.4v13.2L12 24l9.6-5.4V5.4L12 0zm0 2.4l7.2 4.2v8.4L12 19.2 4.8 15V6.6L12 2.4z"/></svg>
+                Arch Wiki
+            </div>
+            <div class="card-sub">Documentation</div>
+        </a>
 
-								<div id="minesweeper" class="category-block minesweeper-block fade-in">
-									<h3 class="category-title">💣 Minesweeper</h3>
-									<div id="mineStatus" class="mine-status">Click a cell to start</div>
-									<button onclick="startMinesweeper()" class="mini-btn">New Game</button>
-									<div id="mineGrid" class="minesweeper-grid"></div>
-								</div>
-							</div>
-						</div>
-					</div>
+        <!-- QuickRef.me -->
+        <a href="https://quickref.me" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                QuickRef
+            </div>
+            <div class="card-sub">Cheatsheets</div>
+        </a>
 
-		            <div class="enjoyer-text fade-in">Made by the strongest PUPAMUPA enjoyer</div>
-					<div class="widgets-row fade-in">
-						<div class="widget weather-widget">
-							<h4 class="widget-title">Weather</h4>
-							<div class="widget-core">
-								<div id="weather">
-									<div class="weather-temp">--°C</div>
-									<div class="weather-desc">Oslo</div>
-								</div>
-								<div id="weatherMeta" class="widget-subline">Tap to refresh</div>
-								<button onclick="loadWeather()" class="mini-btn">🌤️</button>
-							</div>
-						</div>
+        <!-- Binance + Crypto Widget -->
+        <div class="card col-span-2">
+            <div class="card-title" style="color: var(--orange);">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+                Binance & Crypto
+            </div>
+            <a href="https://binance.com" style="display: block; margin-top: 10px; color: var(--fg); text-decoration: underline; font-size: 0.9rem;">Go to Exchange →</a>
+            <div class="crypto-list" id="crypto-widget">
+                <div class="crypto-item"><span>Loading...</span></div>
+            </div>
+        </div>
 
-						<div class="widget time-widget">
-							<h4 class="widget-title">Local Time</h4>
-							<div class="widget-core">
-								<div id="time" class="time-display">00:00</div>
-								<div id="timeMeta" class="widget-subline">--</div>
-								<button class="mini-btn">⏰</button>
-							</div>
-						</div>
+        <!-- Proton Mail -->
+        <a href="https://mail.proton.me" class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                Proton Mail
+            </div>
+            <div class="card-sub">Secure Email</div>
+        </a>
+    </div>
 
-						<div class="widget fx-widget">
-							<h4 class="widget-title">UAH ↔ NOK Converter</h4>
-							<div class="widget-core">
-								<input id="fxAmount" class="search-input fx-input" type="number" min="0" step="0.01" value="100" placeholder="Amount">
-								<div class="translator-controls">
-									<select id="fxFrom" class="translator-select">
-										<option value="UAH">UAH</option>
-										<option value="NOK">NOK</option>
-									</select>
-									<button id="fxSwapBtn" class="mini-btn translator-swap-btn" type="button">⇄</button>
-									<select id="fxTo" class="translator-select">
-										<option value="NOK">NOK</option>
-										<option value="UAH">UAH</option>
-									</select>
-								</div>
-								<div id="fxResult" class="time-display">--.--</div>
-								<div id="fxMeta" class="weather-desc">Updating rate...</div>
-								<button onclick="loadFxRates()" class="mini-btn">💱</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="logo-container fade-in">
-					<img src="image.png" alt="Pupamupa" class="logo" onerror="this.style.display='none'">
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- Vim Command Bar -->
+    <div id="cmd-bar">
+        <span id="cmd-prompt">:</span>
+        <input type="text" id="cmd-input" autocomplete="off" spellcheck="false">
+    </div>
 
-	<div id="snakeModal" class="snake-modal" hidden>
-		<div id="snakeBackdrop" class="snake-modal-backdrop"></div>
-		<div class="snake-modal-card" role="dialog" aria-modal="true" aria-labelledby="snakeModalTitle">
-			<div class="snake-modal-top">
-				<h4 id="snakeModalTitle">Classified: Snake Protocol</h4>
-				<button id="snakeCloseBtn" class="snake-close-btn" type="button" aria-label="Close snake game">×</button>
-			</div>
-			<div class="snake-header">
-				<span id="snakeScore">Score: 0</span>
-				<span id="snakeStatus">Use arrow keys</span>
-			</div>
-			<canvas id="snakeCanvas" width="256" height="160" aria-label="Snake game area"></canvas>
-			<button id="snakeRestartBtn" class="mini-btn" type="button">Restart Snake</button>
-		</div>
-	</div>
+    <script>
+        // --- CONFIGURATION ---
+        const SEARCH_ENGINES = {
+            'g': 'https://www.google.com/search?q=',
+            'd': 'https://duckduckgo.com/?q=',
+            'y': 'https://www.youtube.com/results?search_query=',
+            'a': 'https://wiki.archlinux.org/index.php?search='
+        };
 
-	<script src="script.js"></script>
+        const COINS = ['bitcoin', 'ethereum', 'solana', 'binancecoin'];
+        
+        const cmdBar = document.getElementById('cmd-bar');
+        const cmdInput = document.getElementById('cmd-input');
+        const cryptoWidget = document.getElementById('crypto-widget');
+
+        let isActive = false;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ':' && !isActive) {
+                e.preventDefault();
+                activateCmd();
+            }
+            if (e.key === 'Escape' && isActive) {
+                deactivateCmd();
+            }
+        });
+
+        function activateCmd() {
+            isActive = true;
+            cmdBar.classList.add('active');
+            cmdInput.value = '';
+            cmdInput.focus();
+        }
+
+        function deactivateCmd() {
+            isActive = false;
+            cmdBar.classList.remove('active');
+            cmdInput.blur();
+        }
+
+        cmdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const query = cmdInput.value.trim();
+                if (query.length >= 2) {
+                    const engineKey = query[0].toLowerCase();
+                    const searchTerm = query.substring(1).trim();
+                    
+                    if (SEARCH_ENGINES[engineKey]) {
+                        window.location.href = SEARCH_ENGINES[engineKey] + encodeURIComponent(searchTerm);
+                    } else {
+                        window.location.href = SEARCH_ENGINES['g'] + encodeURIComponent(query);
+                    }
+                }
+                deactivateCmd();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (isActive && !cmdBar.contains(e.target)) {
+                cmdInput.focus();
+            }
+        });
+
+        // --- CRYPTO WIDGET ---
+        async function fetchCrypto() {
+            try {
+                const ids = COINS.join(',');
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=10&page=1&sparkline=false`);
+                const data = await response.json();
+
+                cryptoWidget.innerHTML = '';
+
+                data.forEach(coin => {
+                    const price = coin.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                    const change = coin.price_change_percentage_24h.toFixed(2);
+                    const isUp = change >= 0;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'crypto-item';
+                    item.innerHTML = `
+                        <span style="color: var(--fg4)">${coin.symbol.toUpperCase()}</span>
+                        <div style="text-align: right;">
+                            <div class="crypto-price">${price}</div>
+                            <div class="crypto-change ${isUp ? 'change-up' : 'change-down'}">
+                                ${isUp ? '▲' : '▼'} ${Math.abs(change)}%
+                            </div>
+                        </div>
+                    `;
+                    cryptoWidget.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Crypto fetch error:', error);
+                cryptoWidget.innerHTML = '<div class="crypto-item"><span style="color: var(--red)">API Error</span></div>';
+            }
+        }
+
+        fetchCrypto();
+        setInterval(fetchCrypto, 60000);
+    </script>
 </body>
 </html>
